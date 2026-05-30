@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, Shield, Zap, Target, ArrowUpRight, TrendingUp, Building2, Briefcase, ChevronLeft, ChevronRight, CheckCircle, Scale } from "lucide-react";
@@ -35,20 +35,32 @@ import logo7 from "@/assets/images/logo-7.png";
 import logo8 from "@/assets/images/logo-8.png";
 import { cn } from "@/lib/utils";
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
+const HERO_SLIDES = [
+  {
+    badge: "Next-Gen Advisory Firm",
+    titleTop: "Professionals at work",
+    titleAccent: "for you.",
+    desc: "Minding your business as ours. We combine decades of specialized corporate law expertise with AI-augmented workflows to deliver unparalleled corporate governance, restructuring, and compliance solutions."
+  },
+  {
+    badge: "Corporate Restructuring",
+    titleTop: "Restructuring built",
+    titleAccent: "for growth.",
+    desc: "Pragmatic, effective strategies that help emerging and mid-cap companies navigate complex transitions, mergers, and reorganizations to unlock lasting value."
+  },
+  {
+    badge: "Governance & Compliance",
+    titleTop: "Governance you",
+    titleAccent: "can trust.",
+    desc: "Sound ethical standards and superior corporate governance frameworks that keep you compliant, credible, and ready for listing, scrutiny, and what comes next."
+  },
+  {
+    badge: "Financial Markets",
+    titleTop: "Capital markets,",
+    titleAccent: "navigated.",
+    desc: "End-to-end advisory across public issues, takeovers, insider trading, securities and FEMA, so you can move on opportunities with confidence and clarity."
   }
-};
+];
 
 const CAPABILITIES = [
   {
@@ -142,6 +154,41 @@ export default function Home() {
     };
   }, [emblaApi, prefersReducedMotion]);
 
+  // Hero Carousel Setup
+  const [heroRef, heroApi] = useEmblaCarousel({ loop: true });
+  const [heroSelected, setHeroSelected] = useState(0);
+
+  useEffect(() => {
+    if (!heroApi) return;
+    const onSelect = () => setHeroSelected(heroApi.selectedScrollSnap());
+    onSelect();
+    heroApi.on("select", onSelect);
+    return () => {
+      heroApi.off("select", onSelect);
+    };
+  }, [heroApi]);
+
+  useEffect(() => {
+    if (!heroApi || prefersReducedMotion) return;
+
+    let isHovered = false;
+    const root = heroApi.rootNode();
+    const onEnter = () => { isHovered = true; };
+    const onLeave = () => { isHovered = false; };
+    root.addEventListener("mouseenter", onEnter);
+    root.addEventListener("mouseleave", onLeave);
+
+    const interval = setInterval(() => {
+      if (!isHovered) heroApi.scrollNext();
+    }, 7000);
+
+    return () => {
+      clearInterval(interval);
+      root.removeEventListener("mouseenter", onEnter);
+      root.removeEventListener("mouseleave", onLeave);
+    };
+  }, [heroApi, prefersReducedMotion]);
+
   return (
     <div className="w-full">
       {/* Hero Section */}
@@ -155,37 +202,64 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <motion.div 
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-            className="max-w-4xl"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-              <span className="relative flex h-2 w-2">
-                {!prefersReducedMotion && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>}
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              Next-Gen Advisory Firm
-            </motion.div>
-            
-            <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground mb-6 leading-[1.1]">
-              Professionals at work <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">for you.</span>
-            </motion.h1>
-            
-            <motion.p variants={fadeInUp} className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
-              Minding your business as ours. We combine decades of specialized corporate law expertise with AI-augmented workflows to deliver unparalleled corporate governance, restructuring, and compliance solutions.
-            </motion.p>
-            
-            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-4">
-              <Link href="/services" className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group">
-                Explore Services
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="/contact" className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
-                Consult With Us
-              </Link>
-            </motion.div>
+            <div className="overflow-hidden" ref={heroRef}>
+              <div className="flex">
+                {HERO_SLIDES.map((slide, i) => (
+                  <div key={i} className="flex-[0_0_100%] min-w-0">
+                    <div className="max-w-4xl">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+                        <span className="relative flex h-2 w-2">
+                          {!prefersReducedMotion && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>}
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                        </span>
+                        {slide.badge}
+                      </div>
+
+                      <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground mb-6 leading-[1.1]">
+                        {slide.titleTop} <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">{slide.titleAccent}</span>
+                      </h1>
+
+                      <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
+                        {slide.desc}
+                      </p>
+
+                      <div className="flex flex-wrap items-center gap-4">
+                        <Link href="/services" className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group">
+                          Explore Services
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                        <Link href="/contact" className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                          Consult With Us
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Hero Slide Indicators */}
+            <div className="flex items-center gap-2 mt-12" role="tablist" aria-label="Hero slides">
+              {HERO_SLIDES.map((slide, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  onClick={() => heroApi?.scrollTo(i)}
+                  aria-label={`Show: ${slide.badge}`}
+                  aria-selected={heroSelected === i}
+                  className={cn(
+                    "h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    heroSelected === i ? "w-8 bg-primary" : "w-2 bg-foreground/20 hover:bg-foreground/40"
+                  )}
+                />
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
