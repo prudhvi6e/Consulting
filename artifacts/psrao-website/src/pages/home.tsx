@@ -1,9 +1,39 @@
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useCallback } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowRight, ChevronRight, Shield, Zap, Target, Globe, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Shield, Zap, Target, ArrowUpRight, TrendingUp, Building2, Briefcase, ChevronLeft, ChevronRight, CheckCircle, Scale } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+
 import heroBg from "@/assets/images/hero-bg.png";
 import officeAbstract from "@/assets/images/office-abstract.png";
+
+// Capability Images
+import capRestructuring from "@/assets/images/capability-restructuring.jpg";
+import capMarkets from "@/assets/images/capability-markets.jpg";
+import capForex from "@/assets/images/capability-forex.jpg";
+import capGovernance from "@/assets/images/capability-governance.jpg";
+import capDueDiligence from "@/assets/images/capability-duediligence.jpg";
+
+// Industry Images
+import indFinance from "@/assets/images/industry-finance.jpg";
+import indTech from "@/assets/images/industry-tech.jpg";
+import indHealthcare from "@/assets/images/industry-healthcare.jpg";
+import indManufacturing from "@/assets/images/industry-manufacturing.jpg";
+import indRealEstate from "@/assets/images/industry-realestate.jpg";
+import indRetail from "@/assets/images/industry-retail.jpg";
+import indEnergy from "@/assets/images/industry-energy.jpg";
+import indStartup from "@/assets/images/industry-startup.jpg";
+
+// Logos
+import logo1 from "@/assets/images/logo-1.png";
+import logo2 from "@/assets/images/logo-2.png";
+import logo3 from "@/assets/images/logo-3.png";
+import logo4 from "@/assets/images/logo-4.png";
+import logo5 from "@/assets/images/logo-5.png";
+import logo6 from "@/assets/images/logo-6.png";
+import logo7 from "@/assets/images/logo-7.png";
+import logo8 from "@/assets/images/logo-8.png";
+import { cn } from "@/lib/utils";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -20,10 +50,97 @@ const staggerContainer = {
   }
 };
 
+const CAPABILITIES = [
+  {
+    title: "Corporate Restructuring",
+    desc: "Pragmatic, effective restructuring strategies for emerging and mid-cap companies facing complex transitions.",
+    img: capRestructuring,
+    link: "/services"
+  },
+  {
+    title: "Financial Markets",
+    desc: "Comprehensive advisory on public issues, takeovers, insider trading, and securities management.",
+    img: capMarkets,
+    link: "/services"
+  },
+  {
+    title: "RBI & FOREX Laws",
+    desc: "Guiding cross-border transactions, overseas investments, and FEMA compliances.",
+    img: capForex,
+    link: "/services"
+  },
+  {
+    title: "Corporate Governance",
+    desc: "Establishing sound ethical standards and superior governance frameworks for listing compliance.",
+    img: capGovernance,
+    link: "/services"
+  },
+  {
+    title: "Legal Due Diligence",
+    desc: "Meticulous verification of compliance, risks, and obligations prior to strategic investments and mergers.",
+    img: capDueDiligence,
+    link: "/services"
+  }
+];
+
+const INDUSTRIES = [
+  { name: "Finance & Banking", img: indFinance, icon: Building2 },
+  { name: "Technology", img: indTech, icon: Zap },
+  { name: "Healthcare & Pharma", img: indHealthcare, icon: Shield },
+  { name: "Manufacturing", img: indManufacturing, icon: Target },
+  { name: "Infrastructure", img: indRealEstate, icon: Building2 },
+  { name: "Retail & FMCG", img: indRetail, icon: Briefcase },
+  { name: "Energy", img: indEnergy, icon: Zap },
+  { name: "Startups & Ventures", img: indStartup, icon: TrendingUp },
+];
+
+const LOGOS = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8];
+
 export default function Home() {
+  const prefersReducedMotion = useReducedMotion();
+  
   useEffect(() => {
     document.title = "PS Rao & Associates | Corporate Advisors & Company Secretaries";
   }, []);
+
+  // Embla Carousel Setup
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi || prefersReducedMotion) return;
+    
+    let autoplayInterval: NodeJS.Timeout;
+    let isHovered = false;
+
+    const play = () => {
+      autoplayInterval = setInterval(() => {
+        if (!isHovered && emblaApi) emblaApi.scrollNext();
+      }, 5000);
+    };
+
+    const handleMouseEnter = () => { isHovered = true; };
+    const handleMouseLeave = () => { isHovered = false; };
+
+    const container = emblaApi.rootNode();
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+
+    play();
+
+    return () => {
+      clearInterval(autoplayInterval);
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [emblaApi, prefersReducedMotion]);
 
   return (
     <div className="w-full">
@@ -46,7 +163,7 @@ export default function Home() {
           >
             <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                {!prefersReducedMotion && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>}
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
               Next-Gen Advisory Firm
@@ -74,14 +191,104 @@ export default function Home() {
       </section>
 
       {/* Marquee Section */}
-      <section className="py-10 border-y border-border bg-card/50 overflow-hidden flex items-center">
-        <div className="container mx-auto px-4 md:px-6 mb-4">
-          <p className="text-sm font-medium text-muted-foreground text-center tracking-widest uppercase mb-6">Trusted By Forward-Thinking Enterprises</p>
+      <section className="py-12 border-y border-border bg-card/30 overflow-hidden flex flex-col items-center group">
+        <div className="container mx-auto px-4 md:px-6 mb-8">
+          <p className="text-sm font-medium text-muted-foreground text-center tracking-widest uppercase">Trusted across sectors</p>
         </div>
-        <div className="flex w-[200%] animate-[marquee_20s_linear_infinite] opacity-50 dark:opacity-30 items-center justify-around gap-16 md:gap-32">
-          {['FINANCE', 'TECHNOLOGY', 'HEALTHCARE', 'MANUFACTURING', 'INFRASTRUCTURE', 'RETAIL', 'FINANCE', 'TECHNOLOGY'].map((text, i) => (
-            <span key={i} className="text-2xl md:text-4xl font-display font-bold text-foreground tracking-widest">{text}</span>
-          ))}
+        <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+          <div className={cn(
+            "flex items-center justify-center md:justify-start [&_img]:max-w-none gap-16 md:gap-32",
+            prefersReducedMotion ? "" : "animate-[marquee_30s_linear_infinite] group-hover:[animation-play-state:paused]"
+          )}>
+            {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
+              <img 
+                key={i} 
+                src={logo} 
+                alt="" 
+                aria-hidden="true"
+                className="h-10 md:h-12 w-auto object-contain opacity-50 dark:opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Showcase Carousel */}
+      <section className="py-24 bg-background relative">
+        <div className="container mx-auto px-4 md:px-6 mb-12 flex items-end justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Flagship Capabilities</h2>
+            <h3 className="text-3xl md:text-5xl font-display font-bold text-foreground">Excellence in Execution</h3>
+          </div>
+          <div className="hidden md:flex gap-3">
+            <button onClick={scrollPrev} className="h-12 w-12 rounded-full border border-border flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors" aria-label="Previous capability">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button onClick={scrollNext} className="h-12 w-12 rounded-full border border-border flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors" aria-label="Next capability">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        
+        <div className="pl-4 md:pl-6 lg:pl-[max(1.5rem,calc((100vw-1280px)/2))]">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex touch-pan-y -ml-4">
+              {CAPABILITIES.map((cap, index) => (
+                <div key={index} className="flex-[0_0_90%] md:flex-[0_0_60%] lg:flex-[0_0_40%] min-w-0 pl-4 relative group">
+                  <div className="relative h-[450px] md:h-[600px] w-full rounded-2xl md:rounded-3xl overflow-hidden bg-muted">
+                    <img src={cap.img} alt={cap.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
+                      <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h4 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">{cap.title}</h4>
+                        <p className="text-white/80 text-lg mb-8 max-w-lg leading-relaxed line-clamp-2">{cap.desc}</p>
+                        <Link href={cap.link} className="inline-flex items-center gap-2 text-white font-medium group/btn">
+                          View details <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Industries Grid */}
+      <section className="py-24 bg-card border-y border-border">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Industries We Serve</h2>
+            <h3 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-6">Cross-Sector Expertise</h3>
+            <p className="text-lg text-muted-foreground">Our specialized teams deliver tailored corporate advisory solutions across a wide spectrum of modern industries.</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {INDUSTRIES.map((ind, i) => (
+              <motion.div
+                key={ind.name}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.5 } }
+                }}
+                className="group relative h-[300px] rounded-2xl overflow-hidden cursor-pointer"
+              >
+                <img src={ind.img} alt={`Industry: ${ind.name}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/10 transition-opacity duration-300 group-hover:from-black/95" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/20 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                    <ind.icon className="w-5 h-5 text-white" />
+                  </div>
+                  <h4 className="text-xl font-display font-bold text-white mb-2">{ind.name}</h4>
+                  <div className="h-0.5 w-0 bg-primary group-hover:w-12 transition-all duration-300" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -96,7 +303,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: Shield, title: "Uncompromising Quality", desc: "Highest standards of performance and quality service, executing complex transactions within required timetables." },
-              { icon: Zap, title: "Modern & Agile", desc: "A blend of extensive experience and innovative attitude, utilizing AI and modern tech to work 24/7 for you." },
+              { icon: Zap, title: "Modern & Agile", desc: "A blend of extensive experience and innovative attitude, utilizing modern tech to work 24/7 for you." },
               { icon: Target, title: "Customized Structuring", desc: "Practical advice and business solutions designed specifically to maximize value and unlock growth potential." }
             ].map((feature, i) => (
               <motion.div 
@@ -129,7 +336,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div className="max-w-2xl">
               <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Our Expertise</h2>
-              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">Comprehensive Corporate Solutions</h3>
+              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">Comprehensive Solutions</h3>
               <p className="text-secondary-foreground/70 text-lg">We deliver value through a dedicated team of professionals with extensive experience across a broad range of disciplines.</p>
             </div>
             <Link href="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-white/20 hover:bg-white/10 hover:text-white h-11 px-8 py-2 transition-colors">

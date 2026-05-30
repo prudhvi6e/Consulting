@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "jCCcnJa87jSrU4LvWDtXf"
@@ -18,3 +17,129 @@ id = "EJt2EF6cq-xaS4V-p6MLH"
 uri = "file://artifacts/psrao-website/src/assets/images/office-abstract.png"
 type = "image"
 title = "abstract corporate building architecture"
+
+[[generated]]
+id = "Q5j_4al9lPVxjGabmfabo"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-1.png"
+type = "image"
+title = "Corporate logo 1"
+
+[[generated]]
+id = "gNMSdCsFw3Y5DNnj-Q2hn"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-2.png"
+type = "image"
+title = "Corporate logo 2"
+
+[[generated]]
+id = "5UBNayH6psTdbIWUjS9EV"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-3.png"
+type = "image"
+title = "Corporate logo 3"
+
+[[generated]]
+id = "CE07A79NTCosI2HCdFRzn"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-4.png"
+type = "image"
+title = "Corporate logo 4"
+
+[[generated]]
+id = "KoDLEI2ZlorYXElV7fzmp"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-5.png"
+type = "image"
+title = "Corporate logo 5"
+
+[[generated]]
+id = "dDAu1fmZrABmtP3LEMJVk"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-6.png"
+type = "image"
+title = "Corporate logo 6"
+
+[[generated]]
+id = "QtKj7STcg7zyuSv8DnY-L"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-7.png"
+type = "image"
+title = "Corporate logo 7"
+
+[[generated]]
+id = "1jy_X9JdtRnx7ehYR9lew"
+uri = "file://artifacts/psrao-website/src/assets/images/logo-8.png"
+type = "image"
+title = "Corporate logo 8"
+
+[[outputs]]
+id = "eb_ftBGXrEKSa4iiIBqO1"
+uri = "file://artifacts/psrao-website/src/assets/images/capability-restructuring.jpg"
+type = "image"
+title = "modern corporate restructuring meeting room discussion, professional lighting"
+
+[[outputs]]
+id = "ces_uhJSQtRhT9IEwHADz"
+uri = "file://artifacts/psrao-website/src/assets/images/capability-markets.jpg"
+type = "image"
+title = "stock market financial data screens in modern office, professional"
+
+[[outputs]]
+id = "-_ibVBhm6vGVUsX9wN3p-"
+uri = "file://artifacts/psrao-website/src/assets/images/capability-forex.jpg"
+type = "image"
+title = "global currency exchange forex concept with digital overlays or charts"
+
+[[outputs]]
+id = "gEq7JuEx2Xq6OvoEgv15r"
+uri = "file://artifacts/psrao-website/src/assets/images/capability-governance.jpg"
+type = "image"
+title = "board of directors corporate governance meeting table, professional"
+
+[[outputs]]
+id = "bLT8EizdbgLo2x5jWh9un"
+uri = "file://artifacts/psrao-website/src/assets/images/capability-duediligence.jpg"
+type = "image"
+title = "legal due diligence reviewing documents in modern office, professional"
+
+[[outputs]]
+id = "u01QxY2T4rwJQffxIEnDs"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-finance.jpg"
+type = "image"
+title = "finance and banking modern glass building architecture"
+
+[[outputs]]
+id = "t3DsPBMBkCNGl4jiISJqj"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-tech.jpg"
+type = "image"
+title = "modern technology server room or abstract tech environment"
+
+[[outputs]]
+id = "0ohKEVSuHeYj0riRNjqaY"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-healthcare.jpg"
+type = "image"
+title = "modern healthcare pharma laboratory or medical facility"
+
+[[outputs]]
+id = "rhjes52F0-JUTtG8lxVG2"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-manufacturing.jpg"
+type = "image"
+title = "advanced manufacturing facility clean and modern"
+
+[[outputs]]
+id = "xxSSSbfWzitfwn8bUE9Tc"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-realestate.jpg"
+type = "image"
+title = "infrastructure and real estate construction modern skyline"
+
+[[outputs]]
+id = "7W8on5vJ080dCviB3a0J7"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-retail.jpg"
+type = "image"
+title = "modern retail store interior shopping FMCG"
+
+[[outputs]]
+id = "aL4vpyx-8lrXaRmvAbECd"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-energy.jpg"
+type = "image"
+title = "renewable energy wind turbines or solar panels modern"
+
+[[outputs]]
+id = "VKciMZSbNpjvxA_5PhwAr"
+uri = "file://artifacts/psrao-website/src/assets/images/industry-startup.jpg"
+type = "image"
+title = "modern startup venture office space creative team working"

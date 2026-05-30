@@ -49,6 +49,7 @@ A futuristic, animated marketing site positioning PS Rao & Associates as a next-
 
 - In `index.css`, the Google Fonts `@import url(...)` MUST come before `@import "tailwindcss"`. Tailwind v4 inlines its import, and any `@import` placed after it is dropped ("@import must precede all other statements"), silently disabling the custom fonts.
 - framer-motion cubic-bezier `ease` arrays must be a fixed tuple (`as const`) or typed `Easing`, otherwise they infer as `number[]` and fail typecheck.
+- Tailwind v4 does NOT ship a `marquee` keyframe. The home logo/industry marquee uses `animate-[marquee_..._linear_infinite]`, which silently does nothing unless `@keyframes marquee` is defined in `index.css`. It is (translateX(0) → translateX(-33.3333%) for the tripled `[...LOGOS,...LOGOS,...LOGOS]` track). Keep the keyframe shift in sync with the number of track copies.
 
 ## Pointers
 
