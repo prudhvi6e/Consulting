@@ -4,10 +4,6 @@ import { Link } from "wouter";
 import { ArrowRight, Shield, Zap, Target, ArrowUpRight, TrendingUp, Building2, Briefcase, ChevronLeft, ChevronRight, CheckCircle, Scale, Cpu, Network, Sparkles } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
-import { Reveal } from "@/components/visual/Reveal";
-import { TiltCard } from "@/components/visual/TiltCard";
-import { Parallax } from "@/components/visual/Parallax";
-
 import heroBg from "@/assets/images/hero-bg.png";
 import officeAbstract from "@/assets/images/office-abstract.png";
 
@@ -196,117 +192,87 @@ export default function Home() {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative min-h-[100dvh] flex items-center overflow-hidden bg-transparent perspective-[1000px]">
-        {/* Parallax Layers */}
-        <Parallax offset={100} className="absolute inset-0 z-0">
-          <img src={heroBg} alt="Abstract futuristic background" className="w-full h-full object-cover opacity-20 dark:opacity-10 mix-blend-screen scale-110" />
-        </Parallax>
+      <section className="relative min-h-[90vh] flex items-center pt-20 pb-20 overflow-hidden bg-background">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/80 to-background z-10" />
+          <img src={heroBg} alt="Abstract futuristic background" className="w-full h-full object-cover opacity-30 dark:opacity-20" />
+          
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] mix-blend-screen animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-blue-400/10 rounded-full blur-[120px] mix-blend-screen" />
+        </div>
 
-        <Parallax offset={200} className="absolute inset-0 z-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-primary/20 rounded-full blur-[100px] mix-blend-screen animate-aurora" />
-          <div className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] max-w-[700px] max-h-[700px] bg-blue-400/10 rounded-full blur-[120px] mix-blend-screen animate-aurora-reverse" style={{ animationDelay: '-5s' }} />
-        </Parallax>
-
-        {/* Floating Glass Chips - Depth layer */}
-        {!prefersReducedMotion && (
-          <Parallax offset={-50} className="absolute inset-0 z-30 pointer-events-none hidden lg:block">
-            <div className="absolute top-[16%] right-[4%] glass px-6 py-4 rounded-2xl flex items-center gap-4 animate-[float_6s_ease-in-out_infinite]">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Compliance</p>
-                <p className="text-foreground font-display font-bold">24/7 Monitoring</p>
-              </div>
-            </div>
-            
-            <div className="absolute bottom-[18%] right-[4%] glass px-6 py-4 rounded-2xl flex items-center gap-4 animate-[float_8s_ease-in-out_infinite_reverse]">
-              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <Target className="w-5 h-5 text-blue-500" />
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Restructuring</p>
-                <p className="text-foreground font-display font-bold">Strategic Growth</p>
-              </div>
-            </div>
-          </Parallax>
-        )}
-
-        <div className="container mx-auto px-4 md:px-6 relative z-20">
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] as const }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
           >
-            <div className="glass-panel rounded-[2.5rem] p-8 md:p-16 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
-              <div className="overflow-hidden relative z-10" ref={heroRef}>
-                <div className="flex">
+            <div className="overflow-hidden" ref={heroRef}>
+              <div className="flex">
                 {HERO_SLIDES.map((slide, i) => (
                   <div key={i} className="flex-[0_0_100%] min-w-0">
-                    <div className="max-w-4xl relative z-10">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/30 text-primary text-sm font-medium mb-8 shadow-[0_0_20px_rgba(46,107,255,0.2)]">
+                    <div className="max-w-4xl">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
                         <span className="relative flex h-2 w-2">
                           {!prefersReducedMotion && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>}
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary shadow-[0_0_8px_rgba(46,107,255,1)]"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                         </span>
                         {slide.badge}
                       </div>
 
-                      <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground mb-6 leading-[1.1] drop-shadow-sm">
-                        {slide.titleTop} <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-md">{slide.titleAccent}</span>
+                      <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground mb-6 leading-[1.1]">
+                        {slide.titleTop} <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">{slide.titleAccent}</span>
                       </h1>
 
-                      <p className="text-lg md:text-xl text-foreground/80 mb-10 max-w-2xl leading-relaxed font-light">
+                      <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl leading-relaxed">
                         {slide.desc}
                       </p>
 
                       <div className="flex flex-wrap items-center gap-4">
-                        <Link href="/services" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-8 text-sm font-medium text-primary-foreground shadow-[0_0_20px_rgba(46,107,255,0.4)] transition-all hover:shadow-[0_0_30px_rgba(46,107,255,0.6)] hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group">
+                        <Link href="/services" className="inline-flex h-12 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 group">
                           Explore Services
                           <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
-                        <Link href="/contact" className="inline-flex h-14 items-center justify-center rounded-full glass px-8 text-sm font-medium shadow-sm transition-all hover:bg-white/20 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                        <Link href="/contact" className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
                           Consult With Us
                         </Link>
                       </div>
                     </div>
                   </div>
                 ))}
-                </div>
               </div>
-              
-              {/* Hero Slide Indicators */}
-              <div className="flex items-center gap-3 mt-16 relative z-10" role="tablist" aria-label="Hero slides">
-                {HERO_SLIDES.map((slide, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    role="tab"
-                    onClick={() => heroApi?.scrollTo(i)}
-                    aria-label={`Show: ${slide.badge}`}
-                    aria-selected={heroSelected === i}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-                      heroSelected === i ? "w-12 bg-primary shadow-[0_0_10px_rgba(46,107,255,0.8)]" : "w-2 bg-foreground/20 hover:bg-foreground/40"
-                    )}
-                  />
-                ))}
-              </div>
+            </div>
+
+            {/* Hero Slide Indicators */}
+            <div className="flex items-center gap-2 mt-12" role="tablist" aria-label="Hero slides">
+              {HERO_SLIDES.map((slide, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  role="tab"
+                  onClick={() => heroApi?.scrollTo(i)}
+                  aria-label={`Show: ${slide.badge}`}
+                  aria-selected={heroSelected === i}
+                  className={cn(
+                    "h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    heroSelected === i ? "w-8 bg-primary" : "w-2 bg-foreground/20 hover:bg-foreground/40"
+                  )}
+                />
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Marquee Section */}
-      <section className="py-10 border-y border-white/10 glass overflow-hidden flex flex-col items-center group relative z-20 shadow-xl">
-        <div className="container mx-auto px-4 md:px-6 mb-6">
-          <p className="text-xs font-bold text-muted-foreground text-center tracking-widest uppercase">Trusted across sectors</p>
+      <section className="py-12 border-y border-border bg-card/30 overflow-hidden flex flex-col items-center group">
+        <div className="container mx-auto px-4 md:px-6 mb-8">
+          <p className="text-sm font-medium text-muted-foreground text-center tracking-widest uppercase">Trusted across sectors</p>
         </div>
         <div className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
           <div className={cn(
             "flex items-center justify-center md:justify-start [&_img]:max-w-none gap-16 md:gap-32",
-            prefersReducedMotion ? "" : "animate-[marquee_40s_linear_infinite]"
+            prefersReducedMotion ? "" : "animate-[marquee_30s_linear_infinite] group-hover:[animation-play-state:paused]"
           )}>
             {[...LOGOS, ...LOGOS, ...LOGOS].map((logo, i) => (
               <img 
@@ -314,7 +280,7 @@ export default function Home() {
                 src={logo} 
                 alt="" 
                 aria-hidden="true"
-                className="h-10 md:h-12 w-auto object-contain opacity-40 dark:opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300 drop-shadow-md"
+                className="h-10 md:h-12 w-auto object-contain opacity-50 dark:opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300"
               />
             ))}
           </div>
@@ -322,47 +288,40 @@ export default function Home() {
       </section>
 
       {/* Showcase Carousel */}
-      <section className="py-32 relative bg-transparent overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6 mb-16 flex items-end justify-between relative z-10">
-          <Reveal>
-            <h2 className="text-sm font-bold text-primary tracking-widest uppercase mb-4 flex items-center gap-2">
-              <span className="w-8 h-px bg-primary"></span> Flagship Capabilities
-            </h2>
-            <h3 className="text-4xl md:text-6xl font-display font-bold text-foreground">Excellence in Execution</h3>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <div className="hidden md:flex gap-4">
-              <button onClick={scrollPrev} className="h-14 w-14 rounded-full glass border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shadow-lg" aria-label="Previous capability">
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button onClick={scrollNext} className="h-14 w-14 rounded-full glass border border-white/20 flex items-center justify-center hover:bg-white/10 transition-colors shadow-lg" aria-label="Next capability">
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
-          </Reveal>
+      <section className="py-24 bg-background relative">
+        <div className="container mx-auto px-4 md:px-6 mb-12 flex items-end justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Flagship Capabilities</h2>
+            <h3 className="text-3xl md:text-5xl font-display font-bold text-foreground">Excellence in Execution</h3>
+          </div>
+          <div className="hidden md:flex gap-3">
+            <button onClick={scrollPrev} className="h-12 w-12 rounded-full border border-border flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors" aria-label="Previous capability">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button onClick={scrollNext} className="h-12 w-12 rounded-full border border-border flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors" aria-label="Next capability">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
         
-        <div className="pl-4 md:pl-6 lg:pl-[max(1.5rem,calc((100vw-1280px)/2))] relative z-10">
-          <div className="overflow-visible" ref={emblaRef}>
-            <div className="flex touch-pan-y -ml-4 pb-12 pt-4">
+        <div className="pl-4 md:pl-6 lg:pl-[max(1.5rem,calc((100vw-1280px)/2))]">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex touch-pan-y -ml-4">
               {CAPABILITIES.map((cap, index) => (
-                <div key={index} className="flex-[0_0_90%] md:flex-[0_0_50%] lg:flex-[0_0_35%] min-w-0 pl-4 relative">
-                  <TiltCard className="h-full">
-                    <div className="relative h-[500px] md:h-[650px] w-full rounded-[2.5rem] overflow-hidden bg-card border border-white/10 group shadow-2xl">
-                      <img src={cap.img} alt={cap.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1 opacity-80" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                      
-                      <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end z-20">
-                        <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                          <h4 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 drop-shadow-md">{cap.title}</h4>
-                          <p className="text-white/80 text-lg mb-8 max-w-lg leading-relaxed line-clamp-2 drop-shadow-sm font-light">{cap.desc}</p>
-                          <Link href={cap.link} className="inline-flex items-center gap-2 text-white font-medium group/btn glass px-6 py-3 rounded-full w-fit hover:bg-white/20 transition-colors">
-                            View details <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                          </Link>
-                        </div>
+                <div key={index} className="flex-[0_0_90%] md:flex-[0_0_60%] lg:flex-[0_0_40%] min-w-0 pl-4 relative group">
+                  <div className="relative h-[450px] md:h-[600px] w-full rounded-2xl md:rounded-3xl overflow-hidden bg-muted">
+                    <img src={cap.img} alt={cap.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 p-8 md:p-12 flex flex-col justify-end">
+                      <div className="translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                        <h4 className="text-3xl md:text-4xl font-display font-bold text-white mb-4">{cap.title}</h4>
+                        <p className="text-white/80 text-lg mb-8 max-w-lg leading-relaxed line-clamp-2">{cap.desc}</p>
+                        <Link href={cap.link} className="inline-flex items-center gap-2 text-white font-medium group/btn">
+                          View details <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Link>
                       </div>
                     </div>
-                  </TiltCard>
+                  </div>
                 </div>
               ))}
             </div>
@@ -371,145 +330,199 @@ export default function Home() {
       </section>
 
       {/* Industries Grid */}
-      <section className="py-32 relative border-y border-white/10 glass-panel">
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <Reveal className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-sm font-bold text-primary tracking-widest uppercase mb-4 flex items-center justify-center gap-2">
-              <span className="w-8 h-px bg-primary"></span> Industries We Serve <span className="w-8 h-px bg-primary"></span>
-            </h2>
-            <h3 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">Cross-Sector Expertise</h3>
-            <p className="text-xl text-muted-foreground font-light">Our specialized teams deliver tailored corporate advisory solutions across a wide spectrum of modern industries.</p>
-          </Reveal>
+      <section className="py-24 bg-card border-y border-border">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Industries We Serve</h2>
+            <h3 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-6">Cross-Sector Expertise</h3>
+            <p className="text-lg text-muted-foreground">Our specialized teams deliver tailored corporate advisory solutions across a wide spectrum of modern industries.</p>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {INDUSTRIES.map((ind, i) => (
-              <Reveal key={ind.name} delay={i * 0.1}>
-                <TiltCard glow={true}>
-                  <div className="group relative h-[350px] rounded-3xl overflow-hidden cursor-pointer border border-white/10 shadow-xl bg-card">
-                    <img src={ind.img} alt={`Industry: ${ind.name}`} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 opacity-70 group-hover:opacity-90" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-300 group-hover:from-black/95" />
-                    <div className="absolute inset-0 p-8 flex flex-col justify-end z-20">
-                      <div className="w-14 h-14 rounded-2xl glass flex items-center justify-center mb-6 transform translate-y-6 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                        <ind.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h4 className="text-2xl font-display font-bold text-white mb-3 drop-shadow-md">{ind.name}</h4>
-                      <div className="h-1 w-0 bg-primary group-hover:w-16 transition-all duration-500 rounded-full shadow-[0_0_10px_rgba(46,107,255,0.8)]" />
-                    </div>
+              <motion.div
+                key={ind.name}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.5 } }
+                }}
+                className="group relative h-[300px] rounded-2xl overflow-hidden cursor-pointer"
+              >
+                <img src={ind.img} alt={`Industry: ${ind.name}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/10 transition-opacity duration-300 group-hover:from-black/95" />
+                <div className="absolute inset-0 p-6 flex flex-col justify-end">
+                  <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-4 border border-white/20 transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                    <ind.icon className="w-5 h-5 text-white" />
                   </div>
-                </TiltCard>
-              </Reveal>
+                  <h4 className="text-xl font-display font-bold text-white mb-2">{ind.name}</h4>
+                  <div className="h-0.5 w-0 bg-primary group-hover:w-12 transition-all duration-300" />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* AI & Technology Section */}
-      <section className="py-40 relative overflow-hidden bg-transparent">
-        <Parallax offset={150} className="absolute top-1/2 left-0 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[1000px] max-h-[1000px] bg-primary/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
-        
+      <section className="py-32 bg-background relative overflow-hidden">
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/20 text-primary text-sm font-medium mb-8 shadow-[0_0_20px_rgba(46,107,255,0.15)]">
-                <Sparkles className="w-4 h-4 animate-pulse" /> AI-Augmented Advisory
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+                <Sparkles className="w-4 h-4" /> AI-Augmented Advisory
               </div>
-              <h3 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground mb-8 leading-[1.1]">
+              <h3 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
                 Human Expertise. <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-lg">Machine Precision.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Machine Precision.</span>
               </h3>
-              <p className="text-xl text-foreground/80 leading-relaxed mb-10 font-light max-w-xl">
-                We don't just interpret the law; we operationalize it. By integrating proprietary AI models and automated compliance workflows, we accelerate due diligence, monitor regulatory changes in real-time, and eliminate manual blind spots.
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                We don't just interpret the law; we operationalize it. By integrating proprietary AI models and automated compliance workflows, we accelerate due diligence, monitor regulatory changes in real-time, and eliminate manual blind spots. The result is faster, more accurate corporate advisory that scales with your ambition.
               </p>
-              <div className="space-y-10">
-                <div className="flex items-start gap-6 group">
-                  <div className="h-16 w-16 rounded-2xl glass border border-white/20 flex items-center justify-center shrink-0 shadow-xl group-hover:bg-primary/10 transition-colors">
-                    <Cpu className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(46,107,255,0.8)]" />
+              <div className="space-y-8">
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-card border border-border flex items-center justify-center shrink-0 shadow-lg shadow-primary/5">
+                    <Cpu className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-2xl font-bold text-foreground mb-2">Automated Due Diligence</h4>
-                    <p className="text-lg text-muted-foreground font-light leading-relaxed">Our models parse thousands of documents to identify risks and anomalies in minutes, ensuring no detail is overlooked.</p>
+                    <h4 className="text-xl font-bold text-foreground">Automated Due Diligence</h4>
+                    <p className="text-base text-muted-foreground mt-2 leading-relaxed">Our models parse thousands of documents to identify risks and anomalies in minutes, ensuring no detail is overlooked.</p>
                   </div>
                 </div>
-                <div className="flex items-start gap-6 group">
-                  <div className="h-16 w-16 rounded-2xl glass border border-white/20 flex items-center justify-center shrink-0 shadow-xl group-hover:bg-primary/10 transition-colors">
-                    <Network className="w-8 h-8 text-primary drop-shadow-[0_0_10px_rgba(46,107,255,0.8)]" />
+                <div className="flex items-start gap-4">
+                  <div className="h-12 w-12 rounded-xl bg-card border border-border flex items-center justify-center shrink-0 shadow-lg shadow-primary/5">
+                    <Network className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="text-2xl font-bold text-foreground mb-2">Real-time Regulatory Mapping</h4>
-                    <p className="text-lg text-muted-foreground font-light leading-relaxed">Continuous monitoring of MCA, SEBI, and RBI notifications mapped directly to your company's obligations.</p>
+                    <h4 className="text-xl font-bold text-foreground">Real-time Regulatory Mapping</h4>
+                    <p className="text-base text-muted-foreground mt-2 leading-relaxed">Continuous monitoring of MCA, SEBI, and RBI notifications mapped directly to your company's compliance obligations.</p>
                   </div>
                 </div>
               </div>
-            </Reveal>
-            
-            <Reveal delay={0.2} className="relative h-[700px]">
-              <TiltCard className="h-full">
-                <div className="relative h-full rounded-[3rem] overflow-hidden glass-panel p-2 shadow-2xl border border-white/20">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-blue-500/10 opacity-50" />
-                  <div className="relative h-full w-full rounded-[2.5rem] bg-background/80 backdrop-blur-3xl overflow-hidden flex flex-col shadow-inner border border-white/10">
-                    <div className="h-16 border-b border-white/10 flex items-center px-8 gap-3 glass">
-                      <div className="w-4 h-4 rounded-full bg-destructive/80 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-                      <div className="w-4 h-4 rounded-full bg-yellow-500/80 shadow-[0_0_10px_rgba(234,179,8,0.5)]" />
-                      <div className="w-4 h-4 rounded-full bg-green-500/80 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-                    </div>
-                    <div className="p-10 flex-1 flex flex-col gap-8 relative">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-[80px] rounded-full pointer-events-none" />
-                        <div className="flex justify-between items-end mb-4">
-                          <div className="h-12 w-1/3 bg-primary/30 rounded-xl animate-pulse shadow-[0_0_15px_rgba(46,107,255,0.2)]" />
-                          <div className="h-8 w-1/4 bg-foreground/10 rounded-full" />
-                        </div>
-                        <div className="space-y-6">
-                          <div className="h-6 w-full bg-foreground/5 rounded-lg" />
-                          <div className="h-6 w-5/6 bg-foreground/5 rounded-lg" />
-                          <div className="h-6 w-4/6 bg-foreground/5 rounded-lg" />
-                        </div>
-                        <div className="mt-12 grid grid-cols-2 gap-8 relative z-10">
-                          <div className="h-40 glass rounded-2xl border border-primary/30 p-6 flex flex-col justify-between shadow-[0_8px_32px_rgba(46,107,255,0.15)] group hover:bg-primary/5 transition-colors">
-                            <div className="h-5 w-1/2 bg-primary/40 rounded-md" />
-                            <div className="h-10 w-3/4 bg-primary/30 rounded-lg shadow-inner" />
-                          </div>
-                          <div className="h-40 glass rounded-2xl border border-blue-500/30 p-6 flex flex-col justify-between shadow-[0_8px_32px_rgba(59,130,246,0.15)] group hover:bg-blue-500/5 transition-colors">
-                            <div className="h-5 w-1/2 bg-blue-500/40 rounded-md" />
-                            <div className="h-10 w-3/4 bg-blue-500/30 rounded-lg shadow-inner" />
-                          </div>
-                        </div>
-                    </div>
-                  </div>
+            </div>
+            <div className="relative h-[600px] rounded-[2rem] overflow-hidden bg-card/40 border border-border/50 p-8 backdrop-blur-sm shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5" />
+              <div className="relative h-full w-full border border-border/50 rounded-2xl bg-background/60 backdrop-blur-md overflow-hidden flex flex-col shadow-inner">
+                <div className="h-14 border-b border-border/50 flex items-center px-6 gap-2 bg-muted/30">
+                  <div className="w-3 h-3 rounded-full bg-destructive/80" />
+                  <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80" />
                 </div>
-              </TiltCard>
-            </Reveal>
+                <div className="p-8 flex-1 flex flex-col gap-6">
+                    <div className="flex justify-between items-end mb-4">
+                      <div className="h-10 w-1/3 bg-primary/20 rounded-lg animate-pulse" />
+                      <div className="h-6 w-1/4 bg-muted rounded-full" />
+                    </div>
+                    <div className="space-y-4">
+                      <div className="h-4 w-full bg-muted rounded-md" />
+                      <div className="h-4 w-5/6 bg-muted rounded-md" />
+                      <div className="h-4 w-4/6 bg-muted rounded-md" />
+                    </div>
+                    <div className="mt-8 grid grid-cols-2 gap-6">
+                      <div className="h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-xl border border-primary/20 p-4 flex flex-col justify-between">
+                        <div className="h-4 w-1/2 bg-primary/30 rounded" />
+                        <div className="h-8 w-3/4 bg-primary/20 rounded" />
+                      </div>
+                      <div className="h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl border border-blue-500/20 p-4 flex flex-col justify-between">
+                        <div className="h-4 w-1/2 bg-blue-500/30 rounded" />
+                        <div className="h-8 w-3/4 bg-blue-500/20 rounded" />
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-32 relative border-t border-white/10 glass-panel">
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <Reveal className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-sm font-bold text-primary tracking-widest uppercase mb-4 flex items-center justify-center gap-2">
-              <span className="w-8 h-px bg-primary"></span> The PSR Advantage <span className="w-8 h-px bg-primary"></span>
-            </h2>
-            <h3 className="text-4xl md:text-6xl font-display font-bold text-foreground">Beyond Traditional Advisory</h3>
-          </Reveal>
+      <section className="py-24 bg-background relative">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">The PSR Advantage</h2>
+            <h3 className="text-3xl md:text-5xl font-display font-bold text-foreground">Beyond Traditional Advisory</h3>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: Shield, title: "Uncompromising Quality", desc: "Highest standards of performance and quality service, executing complex transactions within required timetables." },
               { icon: Zap, title: "Modern & Agile", desc: "A blend of extensive experience and innovative attitude, utilizing modern tech to work 24/7 for you." },
               { icon: Target, title: "Customized Structuring", desc: "Practical advice and business solutions designed specifically to maximize value and unlock growth potential." }
             ].map((feature, i) => (
-              <Reveal key={i} delay={i * 0.15}>
-                <TiltCard>
-                  <div className="glass p-10 rounded-[2.5rem] border border-white/10 text-center flex flex-col items-center h-full hover:bg-white/5 transition-colors shadow-xl">
-                    <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(46,107,255,0.15)]">
-                      <feature.icon className="w-10 h-10 text-primary drop-shadow-[0_0_10px_rgba(46,107,255,0.8)]" />
-                    </div>
-                    <h4 className="text-2xl font-display font-bold text-foreground mb-4">{feature.title}</h4>
-                    <p className="text-muted-foreground leading-relaxed font-light text-lg">{feature.desc}</p>
-                  </div>
-                </TiltCard>
-              </Reveal>
+              <motion.div 
+                key={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }
+                }}
+                className="group p-8 rounded-2xl border border-border bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5"
+              >
+                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <feature.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h4 className="text-xl font-display font-bold text-foreground mb-3">{feature.title}</h4>
+                <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
+              </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Preview */}
+      <section className="py-24 bg-secondary text-secondary-foreground relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+        
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-sm font-medium text-primary tracking-wider uppercase mb-2">Our Expertise</h2>
+              <h3 className="text-3xl md:text-5xl font-display font-bold text-white mb-6">Comprehensive Solutions</h3>
+              <p className="text-secondary-foreground/70 text-lg">We deliver value through a dedicated team of professionals with extensive experience across a broad range of disciplines.</p>
+            </div>
+            <Link href="/services" className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium border border-white/20 hover:bg-white/10 hover:text-white h-11 px-8 py-2 transition-colors">
+              View All Services
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              "Company Law & Secretarial",
+              "Corporate Restructuring",
+              "Financial Markets",
+              "Legal Due Diligence",
+              "RBI & FOREX Laws",
+              "Corporate Governance"
+            ].map((service, i) => (
+              <Link key={i} href="/services" className="group p-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all duration-300 block">
+                <div className="flex justify-between items-start mb-12">
+                  <span className="text-5xl font-display font-light text-white/20 group-hover:text-primary/40 transition-colors">0{i+1}</span>
+                  <ArrowUpRight className="h-6 w-6 text-white/40 group-hover:text-primary transition-colors transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+                </div>
+                <h4 className="text-xl font-display font-bold text-white mb-2">{service}</h4>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 relative overflow-hidden bg-background">
+        <div className="absolute inset-0 opacity-10">
+           <img src={officeAbstract} alt="Abstract" className="w-full h-full object-cover mix-blend-luminosity" />
+        </div>
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
+          <div className="bg-primary/5 border border-primary/20 rounded-3xl p-10 md:p-20 text-center max-w-4xl mx-auto backdrop-blur-sm">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-6">Ready to transform your corporate governance?</h2>
+            <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">Get in touch with our team of experts to discuss how we can help you navigate complex regulatory environments and unlock growth.</p>
+            <Link href="/contact" className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+              Schedule a Consultation <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
           </div>
         </div>
       </section>

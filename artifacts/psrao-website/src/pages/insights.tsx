@@ -1,10 +1,8 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Link } from "wouter";
 import { articles } from "../data/articles";
-import { Reveal } from "@/components/visual/Reveal";
-import { TiltCard } from "@/components/visual/TiltCard";
-import { Parallax } from "@/components/visual/Parallax";
 
 export default function Insights() {
   useEffect(() => {
@@ -12,79 +10,71 @@ export default function Insights() {
   }, []);
 
   return (
-    <div className="w-full pt-20 bg-transparent relative overflow-hidden">
+    <div className="w-full pt-20 bg-background relative overflow-hidden">
       {/* Decorative Background Elements */}
-      <Parallax offset={80} className="absolute top-0 right-0 w-[50vw] h-[50vw] max-w-[800px] bg-primary/15 rounded-full blur-[150px] mix-blend-screen pointer-events-none animate-aurora" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
 
-      <section className="py-24 md:py-40 glass-panel border-b border-white/10 relative z-10 shadow-xl">
+      <section className="py-20 md:py-32 bg-card/40 backdrop-blur-sm border-b border-border relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-4xl">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/30 text-primary text-sm font-medium mb-8 shadow-[0_0_20px_rgba(46,107,255,0.2)]">
-                <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(46,107,255,1)] animate-pulse" />
-                Expert Perspectives
-              </div>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h1 className="text-6xl md:text-8xl font-display font-bold text-foreground mb-8 drop-shadow-md tracking-tight">
-                Insights & <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-lg">Advisory</span>
-              </h1>
-            </Reveal>
-            <Reveal delay={0.2}>
-              <p className="text-2xl text-foreground/80 leading-relaxed font-light">
-                Stay ahead of regulatory curves with our expert analysis on corporate law, financial markets, and governance trends.
-              </p>
-            </Reveal>
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+              Expert Perspectives
+            </div>
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
+              Insights & <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Advisory</span>
+            </h1>
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              Stay ahead of regulatory curves with our expert analysis on corporate law, financial markets, and governance trends.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="py-32 relative z-10">
+      <section className="py-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {articles.map((article, i) => (
-              <Reveal key={article.id} delay={i * 0.1}>
-                <TiltCard className="h-full">
-                  <article className="group flex flex-col p-10 rounded-[2.5rem] border border-white/10 glass shadow-xl hover:shadow-[0_20px_40px_rgba(46,107,255,0.1)] transition-all duration-500 relative overflow-hidden h-full">
-                    {/* Inner highlight */}
-                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <motion.article 
+                key={article.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="group flex flex-col p-8 rounded-3xl border border-border bg-card/80 backdrop-blur-sm hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden"
+              >
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className="flex items-center gap-4 text-sm font-bold text-muted-foreground mb-8">
-                        <span className="text-primary uppercase tracking-wider">{article.category}</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                        <span className="flex items-center gap-2"><Calendar className="w-4 h-4" /> {article.date}</span>
-                        <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-                        <span className="flex items-center gap-2"><Clock className="w-4 h-4" /> {article.readTime}</span>
-                      </div>
-                      
-                      <h3 className="text-3xl font-display font-bold text-foreground mb-6 group-hover:text-primary transition-colors leading-tight">
-                        {article.title}
-                      </h3>
-                      
-                      <p className="text-lg text-foreground/70 leading-relaxed mb-10 flex-grow font-light">
-                        {article.excerpt}
-                      </p>
-                      
-                      <div className="mt-auto">
-                        <Link href={`/insights/${article.slug}`} className="inline-flex items-center h-14 px-8 rounded-full glass border border-white/20 text-sm font-bold text-foreground group-hover:text-primary group-hover:border-primary/40 group-hover:bg-primary/5 transition-all w-fit shadow-md">
-                          Read Article <ArrowRight className="ml-3 w-4 h-4 transform group-hover:translate-x-2 transition-transform" />
-                        </Link>
-                      </div>
-                    </div>
-                  </article>
-                </TiltCard>
-              </Reveal>
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-6">
+                    <span className="text-primary uppercase tracking-wider">{article.category}</span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {article.date}</span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {article.readTime}</span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                    {article.title}
+                  </h3>
+                  
+                  <p className="text-muted-foreground leading-relaxed mb-8 flex-grow">
+                    {article.excerpt}
+                  </p>
+                  
+                  <Link href={`/insights/${article.slug}`} className="inline-flex items-center text-sm font-bold text-foreground group-hover:text-primary transition-colors w-fit">
+                    Read Article <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              </motion.article>
             ))}
           </div>
           
-          <Reveal delay={0.3} className="mt-24 text-center">
-            <button className="inline-flex h-14 items-center justify-center rounded-full glass border border-white/20 px-10 text-sm font-bold shadow-lg transition-all hover:bg-white/10 hover:scale-105">
+          <div className="mt-16 text-center">
+            <button className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground">
               Load More Articles
             </button>
-          </Reveal>
+          </div>
         </div>
       </section>
     </div>

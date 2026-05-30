@@ -1,8 +1,6 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
 import { Briefcase, Building, FileCheck, Scale, Landmark, Banknote, ShieldCheck, Globe2, BookOpen, ArrowRight } from "lucide-react";
-import { Reveal } from "@/components/visual/Reveal";
-import { TiltCard } from "@/components/visual/TiltCard";
-import { Parallax } from "@/components/visual/Parallax";
 
 const services = [
   {
@@ -67,62 +65,54 @@ export default function Services() {
   }, []);
 
   return (
-    <div className="w-full pt-20 bg-transparent relative overflow-hidden">
+    <div className="w-full pt-20 bg-background relative overflow-hidden">
       {/* Decorative Glow */}
-      <Parallax offset={100} className="absolute top-0 right-0 w-[60vw] h-[50vw] max-w-[800px] bg-primary/15 rounded-full blur-[150px] pointer-events-none mix-blend-screen animate-aurora" />
+      <div className="absolute top-0 right-0 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
 
-      <section className="py-24 md:py-40 relative z-10">
+      <section className="py-20 md:py-32 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/30 text-primary text-sm font-medium mb-8 shadow-[0_0_20px_rgba(46,107,255,0.2)]">
-                <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(46,107,255,1)] animate-pulse" />
-                Our Expertise
-              </div>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h1 className="text-6xl md:text-8xl font-display font-bold text-foreground mb-10 tracking-tight drop-shadow-md">
-                Comprehensive <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-lg">Advisory.</span>
-              </h1>
-            </Reveal>
-            <Reveal delay={0.2}>
-              <p className="text-2xl md:text-3xl text-foreground/80 leading-relaxed font-light">
-                We deliver precision-engineered corporate advisory and secretarial services, tailored to navigate complex regulatory environments and unlock business growth at scale.
-              </p>
-            </Reveal>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+              Our Expertise
+            </div>
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-8 tracking-tight">
+              Comprehensive <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Advisory.</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-light">
+              We deliver precision-engineered corporate advisory and secretarial services, tailored to navigate complex regulatory environments and unlock business growth at scale.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="py-32 relative z-10 glass-panel border-y border-white/10 shadow-2xl">
+      <section className="py-24 relative z-10 bg-card/30 backdrop-blur-xl border-t border-border">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, i) => (
-              <Reveal key={service.id} delay={i * 0.1}>
-                <TiltCard className="h-full">
-                  <div className="group relative flex flex-col p-10 rounded-[2.5rem] border border-white/10 glass shadow-xl hover:shadow-[0_20px_40px_rgba(46,107,255,0.1)] transition-all duration-500 overflow-hidden h-full">
-                    {/* Inner highlight */}
-                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                    
-                    <div className="relative z-10 flex flex-col h-full">
-                      <div className="h-20 w-20 rounded-3xl glass border border-white/20 shadow-inner flex items-center justify-center mb-8 group-hover:border-primary/50 group-hover:bg-primary/10 transition-colors duration-500 shadow-[0_0_15px_rgba(255,255,255,0.1)] group-hover:shadow-[0_0_20px_rgba(46,107,255,0.2)]">
-                        <service.icon className="h-10 w-10 text-primary/80 group-hover:text-primary transition-colors drop-shadow-md" />
-                      </div>
-                      <h3 className="text-3xl font-display font-bold text-foreground mb-6 group-hover:text-primary transition-colors">{service.title}</h3>
-                      <p className="text-foreground/70 leading-relaxed flex-grow font-light text-lg">{service.desc}</p>
-                      
-                      <div className="mt-10 pt-8 border-t border-white/10 flex justify-between items-center group-hover:border-primary/20 transition-colors">
-                         <span className="text-sm font-bold uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transform -translate-x-4 group-hover:translate-x-0 transition-all duration-300">Learn More</span>
-                         <div className="w-12 h-12 rounded-full glass border border-white/20 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300 shadow-md">
-                            <ArrowRight className="w-5 h-5" />
-                         </div>
-                      </div>
-                    </div>
+              <motion.div
+                key={service.id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="group relative flex flex-col p-8 rounded-3xl border border-border bg-background shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="h-16 w-16 rounded-2xl bg-card border border-border/50 shadow-inner flex items-center justify-center mb-8 group-hover:border-primary/50 group-hover:bg-primary/5 transition-colors duration-500">
+                    <service.icon className="h-8 w-8 text-primary/80 group-hover:text-primary transition-colors" />
                   </div>
-                </TiltCard>
-              </Reveal>
+                  <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed flex-grow font-light">{service.desc}</p>
+                  
+                  <div className="mt-8 pt-6 border-t border-border/50 flex justify-end">
+                     <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300">
+                        <ArrowRight className="w-5 h-5" />
+                     </div>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

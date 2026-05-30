@@ -1,19 +1,18 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "wouter";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, Play, Pause, Loader2, Sparkles, AlertCircle } from "lucide-react";
 import { getArticleBySlug, getArticlePlainText } from "@/data/articles";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import NotFound from "./not-found";
-import { Reveal } from "@/components/visual/Reveal";
-import { Parallax } from "@/components/visual/Parallax";
-import { TiltCard } from "@/components/visual/TiltCard";
 import { cn } from "@/lib/utils";
 
 export default function ArticleDetail() {
   const { slug } = useParams<{ slug: string }>();
   const article = slug ? getArticleBySlug(slug) : undefined;
   const { toast } = useToast();
+  const prefersReducedMotion = useReducedMotion();
 
   // TTS State
   const [isPlaying, setIsPlaying] = useState(false);
@@ -80,6 +79,7 @@ export default function ArticleDetail() {
       const url = URL.createObjectURL(blob);
       setAudioUrl(url);
 
+      // We need to wait for state to update, or just create audio directly
       if (!audioRef.current) {
         audioRef.current = new Audio(url);
         audioRef.current.onended = () => setIsPlaying(false);
@@ -101,7 +101,7 @@ export default function ArticleDetail() {
   };
 
   const handleSummarize = async () => {
-    if (summary) return;
+    if (summary) return; // Already summarized
     setIsSummaryLoading(true);
     setSummaryError(null);
     try {
@@ -139,144 +139,142 @@ export default function ArticleDetail() {
   };
 
   return (
-    <div className="w-full pt-32 pb-32 bg-transparent relative overflow-hidden">
-      <Parallax offset={100} className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] max-w-[1000px] h-[60vw] max-h-[800px] bg-primary/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none animate-aurora" />
+    <div className="w-full pt-28 pb-24 bg-background relative overflow-hidden">
+      {/* Background glowing meshes */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 
       <article className="container mx-auto px-4 md:px-6 max-w-4xl relative z-10">
-        <Reveal>
-          <Link href="/insights" className="inline-flex items-center h-10 px-6 rounded-full glass border border-white/10 text-sm font-bold text-foreground hover:text-primary transition-all mb-12 shadow-sm hover:shadow-md group">
-            <ArrowLeft className="mr-2 w-4 h-4 transform group-hover:-translate-x-1 transition-transform" /> Back to Insights
-          </Link>
-        </Reveal>
+        <Link href="/insights" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-8 group">
+          <ArrowLeft className="mr-2 w-4 h-4 transform group-hover:-translate-x-1 transition-transform" /> Back to Insights
+        </Link>
 
-        <header className="mb-16">
-          <Reveal delay={0.1}>
-            <div className="flex flex-wrap items-center gap-4 text-sm font-bold text-primary mb-8">
-              <span className="uppercase tracking-widest">{article.category}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-              <span className="text-muted-foreground">{article.date}</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
-              <span className="text-muted-foreground">{article.readTime}</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold text-foreground mb-12 leading-[1.1] drop-shadow-md tracking-tight">
-              {article.title}
-            </h1>
-          </Reveal>
+        <header className="mb-12">
+          <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-primary mb-6">
+            <span className="uppercase tracking-widest">{article.category}</span>
+            <span className="w-1 h-1 rounded-full bg-border" />
+            <span className="text-muted-foreground">{article.date}</span>
+            <span className="w-1 h-1 rounded-full bg-border" />
+            <span className="text-muted-foreground">{article.readTime}</span>
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-8 leading-tight">
+            {article.title}
+          </h1>
 
-          <Reveal delay={0.2}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 p-8 rounded-[2rem] glass border border-white/10 shadow-lg">
-              <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-display font-bold text-xl shadow-[0_0_15px_rgba(46,107,255,0.2)]">
-                  PR
-                </div>
-                <div>
-                  <p className="font-bold text-lg text-foreground mb-1">{article.author}</p>
-                  <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">{article.authorRole}</p>
-                </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-border/50">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                PR
               </div>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="rounded-full glass border-white/20 hover:bg-white/10 hover:text-primary transition-all shadow-md h-12 px-6 font-bold"
-                  onClick={handlePlayPause}
-                  disabled={isTtsLoading}
-                >
-                  {isTtsLoading ? <Loader2 className="w-5 h-5 mr-3 animate-spin" /> : isPlaying ? <Pause className="w-5 h-5 mr-3" /> : <Play className="w-5 h-5 mr-3" />}
-                  {isTtsLoading ? "Generating..." : isPlaying ? "Pause Audio" : "Listen to Article"}
-                </Button>
-                
-                <Button 
-                  size="lg" 
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(46,107,255,0.4)] hover:shadow-[0_0_30px_rgba(46,107,255,0.6)] transition-all h-12 px-6 font-bold"
-                  onClick={handleSummarize}
-                  disabled={isSummaryLoading || !!summary}
-                >
-                  {isSummaryLoading ? <Loader2 className="w-5 h-5 mr-3 animate-spin" /> : <Sparkles className="w-5 h-5 mr-3" />}
-                  {isSummaryLoading ? "Summarizing..." : summary ? "Summarized" : "AI Summary"}
-                </Button>
+              <div>
+                <p className="font-medium text-foreground">{article.author}</p>
+                <p className="text-sm text-muted-foreground">{article.authorRole}</p>
               </div>
             </div>
-          </Reveal>
+
+            <div className="flex items-center gap-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full bg-background/50 backdrop-blur border-primary/20 hover:bg-primary hover:text-primary-foreground transition-all"
+                onClick={handlePlayPause}
+                disabled={isTtsLoading}
+              >
+                {isTtsLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : isPlaying ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
+                {isTtsLoading ? "Generating Audio..." : isPlaying ? "Pause Audio" : "Listen to Article"}
+              </Button>
+              
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="rounded-full shadow-[0_0_15px_rgba(46,107,255,0.3)] hover:shadow-[0_0_25px_rgba(46,107,255,0.5)] transition-all"
+                onClick={handleSummarize}
+                disabled={isSummaryLoading || !!summary}
+              >
+                {isSummaryLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                {isSummaryLoading ? "Summarizing..." : summary ? "Summarized" : "AI Summary"}
+              </Button>
+            </div>
+          </div>
 
           {/* Error States for AI */}
-          <div className={cn("overflow-hidden transition-all duration-300", (ttsError || summaryError) ? "h-auto mt-6 opacity-100" : "h-0 opacity-0")}>
+          <motion.div 
+            initial={false}
+            animate={{ height: (ttsError || summaryError) ? "auto" : 0, opacity: (ttsError || summaryError) ? 1 : 0 }}
+            className="overflow-hidden"
+          >
             {(ttsError || summaryError) && (
-              <div className="p-6 rounded-2xl bg-destructive/10 border border-destructive/20 flex items-start gap-4 text-destructive backdrop-blur-md shadow-lg">
-                <AlertCircle className="w-6 h-6 shrink-0 mt-0.5" />
-                <div className="text-base font-medium">
+              <div className="mt-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-start gap-3 text-destructive">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <div className="text-sm font-medium">
                   {ttsError && <p>Audio Error: {ttsError}</p>}
                   {summaryError && <p>Summary Error: {summaryError}</p>}
                 </div>
               </div>
             )}
-          </div>
+          </motion.div>
 
           {/* AI Summary Panel */}
-          <div className={cn("overflow-hidden transition-all duration-500 ease-out", summary ? "h-auto mt-10 opacity-100" : "h-0 opacity-0")}>
+          <motion.div
+            initial={false}
+            animate={{ height: summary ? "auto" : 0, opacity: summary ? 1 : 0, marginTop: summary ? 24 : 0 }}
+            className="overflow-hidden"
+          >
             {summary && (
-              <TiltCard glow={true}>
-                <div className="p-8 md:p-10 rounded-[2.5rem] glass border border-primary/30 relative shadow-[0_10px_40px_rgba(46,107,255,0.15)]">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-transparent opacity-50" />
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-primary/20 blur-[50px] rounded-full pointer-events-none mix-blend-screen" />
-                  
-                  <div className="flex items-center gap-3 mb-8 text-primary font-bold text-xl drop-shadow-md">
-                    <Sparkles className="w-6 h-6" /> Key Takeaways
-                  </div>
-                  <div className="space-y-4 text-foreground/90 text-lg font-light relative z-10">
-                    {(() => {
-                      const bullets = summary
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .filter((line) => /^[-*]\s+/.test(line))
-                        .map((line) => line.replace(/^[-*]\s+/, ""));
-                      if (bullets.length > 0) {
-                        return bullets.map((bullet, i) => (
-                          <div key={i} className="flex items-start gap-4 p-4 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
-                            <div className="w-2 h-2 rounded-full bg-primary mt-2.5 shrink-0 shadow-[0_0_8px_rgba(46,107,255,0.8)]" />
-                            <p className="leading-relaxed">{bullet}</p>
-                          </div>
-                        ));
-                      }
-                      return summary
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .filter(Boolean)
-                        .map((line, i) => (
-                          <p key={i} className="leading-relaxed p-4 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
-                            {line}
-                          </p>
-                        ));
-                    })()}
-                  </div>
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/5 border border-primary/20 relative backdrop-blur-sm">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-blue-400 opacity-50" />
+                <div className="flex items-center gap-2 mb-4 text-primary font-medium">
+                  <Sparkles className="w-5 h-5" /> Key Takeaways
                 </div>
-              </TiltCard>
+                <div className="space-y-2 text-foreground/90">
+                  {(() => {
+                    const bullets = summary
+                      .split("\n")
+                      .map((line) => line.trim())
+                      .filter((line) => /^[-*]\s+/.test(line))
+                      .map((line) => line.replace(/^[-*]\s+/, ""));
+                    if (bullets.length > 0) {
+                      return bullets.map((bullet, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                          <p className="leading-relaxed">{bullet}</p>
+                        </div>
+                      ));
+                    }
+                    return summary
+                      .split("\n")
+                      .map((line) => line.trim())
+                      .filter(Boolean)
+                      .map((line, i) => (
+                        <p key={i} className="leading-relaxed">
+                          {line}
+                        </p>
+                      ));
+                  })()}
+                </div>
+              </div>
             )}
-          </div>
+          </motion.div>
         </header>
 
-        <Reveal delay={0.3}>
-          <div className="prose prose-xl dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none glass-panel p-10 md:p-16 rounded-[3rem] shadow-2xl border-white/10">
-            <p className="text-2xl text-foreground/90 leading-relaxed font-medium mb-12 border-l-4 border-primary pl-6 py-2">
-              {article.excerpt}
-            </p>
-            
-            {article.content.map((section, idx) => (
-              <div key={idx} className="mb-12">
-                {section.heading && (
-                  <h2 className="text-3xl md:text-4xl mt-16 mb-8 text-foreground drop-shadow-sm">{section.heading}</h2>
-                )}
-                {section.paragraphs.map((paragraph, pIdx) => (
-                  <p key={pIdx} className="mb-8 leading-relaxed text-foreground/80 font-light">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-        </Reveal>
+        <div className="prose prose-lg dark:prose-invert prose-headings:font-display prose-headings:font-bold prose-a:text-primary prose-a:no-underline hover:prose-a:underline max-w-none">
+          <p className="text-xl text-muted-foreground leading-relaxed font-medium mb-10">
+            {article.excerpt}
+          </p>
+          
+          {article.content.map((section, idx) => (
+            <div key={idx} className="mb-10">
+              {section.heading && (
+                <h2 className="text-2xl md:text-3xl mt-12 mb-6 text-foreground">{section.heading}</h2>
+              )}
+              {section.paragraphs.map((paragraph, pIdx) => (
+                <p key={pIdx} className="mb-6 leading-relaxed text-foreground/80">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          ))}
+        </div>
       </article>
       
       {/* Hidden audio element */}
