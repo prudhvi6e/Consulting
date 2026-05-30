@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Briefcase, Building, FileCheck, Scale, Landmark, Banknote, ShieldCheck, Globe2, BookOpen } from "lucide-react";
+import { Briefcase, Building, FileCheck, Scale, Landmark, Banknote, ShieldCheck, Globe2, BookOpen, ArrowRight } from "lucide-react";
 
 const services = [
   {
@@ -65,37 +65,53 @@ export default function Services() {
   }, []);
 
   return (
-    <div className="w-full pt-20">
-      <section className="py-20 md:py-32 bg-card border-b border-border">
+    <div className="w-full pt-20 bg-background relative overflow-hidden">
+      {/* Decorative Glow */}
+      <div className="absolute top-0 right-0 w-[800px] h-[600px] bg-primary/10 rounded-full blur-[150px] pointer-events-none" />
+
+      <section className="py-20 md:py-32 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
-              Our <span className="text-primary">Services</span>
+          <div className="max-w-4xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+              Our Expertise
+            </div>
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-8 tracking-tight">
+              Comprehensive <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Advisory.</span>
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Comprehensive corporate advisory and secretarial services tailored to navigate complex regulatory environments and unlock business growth.
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-light">
+              We deliver precision-engineered corporate advisory and secretarial services, tailored to navigate complex regulatory environments and unlock business growth at scale.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-background">
+      <section className="py-24 relative z-10 bg-card/30 backdrop-blur-xl border-t border-border">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, i) => (
               <motion.div
                 key={service.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group flex flex-col p-8 rounded-2xl border border-border bg-card hover:border-primary/50 transition-all duration-300"
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+                className="group relative flex flex-col p-8 rounded-3xl border border-border bg-background shadow-lg shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-500 overflow-hidden"
               >
-                <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
-                  <service.icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="h-16 w-16 rounded-2xl bg-card border border-border/50 shadow-inner flex items-center justify-center mb-8 group-hover:border-primary/50 group-hover:bg-primary/5 transition-colors duration-500">
+                    <service.icon className="h-8 w-8 text-primary/80 group-hover:text-primary transition-colors" />
+                  </div>
+                  <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{service.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed flex-grow font-light">{service.desc}</p>
+                  
+                  <div className="mt-8 pt-6 border-t border-border/50 flex justify-end">
+                     <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300">
+                        <ArrowRight className="w-5 h-5" />
+                     </div>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-display font-bold text-foreground mb-4">{service.title}</h3>
-                <p className="text-muted-foreground leading-relaxed flex-grow">{service.desc}</p>
               </motion.div>
             ))}
           </div>

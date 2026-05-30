@@ -2,41 +2,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Link } from "wouter";
-
-const articles = [
-  {
-    id: 1,
-    title: "SEBI LODR Regulations: Key Amendments for 2024",
-    excerpt: "An in-depth analysis of the recent changes to listing obligations and disclosure requirements affecting mid-cap and large-cap entities.",
-    date: "Oct 15, 2024",
-    readTime: "5 min read",
-    category: "Compliance"
-  },
-  {
-    id: 2,
-    title: "Navigating FDI Route Changes in the Tech Sector",
-    excerpt: "How recent FEMA notifications impact foreign direct investment structures for emerging technology startups in India.",
-    date: "Sep 28, 2024",
-    readTime: "7 min read",
-    category: "FEMA"
-  },
-  {
-    id: 3,
-    title: "The Evolving Landscape of Corporate Governance",
-    excerpt: "Why independent directors face increased scrutiny and how boards must adapt their internal audit mechanisms.",
-    date: "Sep 10, 2024",
-    readTime: "6 min read",
-    category: "Governance"
-  },
-  {
-    id: 4,
-    title: "M&A Trends: Fast-Track Mergers Demystified",
-    excerpt: "A practical guide to utilizing the Section 233 fast-track merger route under the Companies Act, 2013.",
-    date: "Aug 22, 2024",
-    readTime: "8 min read",
-    category: "Restructuring"
-  }
-];
+import { articles } from "../data/articles";
 
 export default function Insights() {
   useEffect(() => {
@@ -44,12 +10,18 @@ export default function Insights() {
   }, []);
 
   return (
-    <div className="w-full pt-20">
-      <section className="py-20 md:py-32 bg-card border-b border-border">
+    <div className="w-full pt-20 bg-background relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
+
+      <section className="py-20 md:py-32 bg-card/40 backdrop-blur-sm border-b border-border relative z-10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+              Expert Perspectives
+            </div>
             <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
-              Insights & <span className="text-primary">Advisory</span>
+              Insights & <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Advisory</span>
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
               Stay ahead of regulatory curves with our expert analysis on corporate law, financial markets, and governance trends.
@@ -58,7 +30,7 @@ export default function Insights() {
         </div>
       </section>
 
-      <section className="py-24 bg-background">
+      <section className="py-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {articles.map((article, i) => (
@@ -68,26 +40,31 @@ export default function Insights() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group flex flex-col p-8 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all duration-300"
+                className="group flex flex-col p-8 rounded-3xl border border-border bg-card/80 backdrop-blur-sm hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-500 relative overflow-hidden"
               >
-                <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-6">
-                  <span className="text-primary uppercase tracking-wider">{article.category}</span>
-                  <span className="w-1 h-1 rounded-full bg-border" />
-                  <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {article.date}</span>
-                  <span className="w-1 h-1 rounded-full bg-border" />
-                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {article.readTime}</span>
-                </div>
-                
-                <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
-                  {article.title}
-                </h3>
-                
-                <p className="text-muted-foreground leading-relaxed mb-8 flex-grow">
-                  {article.excerpt}
-                </p>
-                
-                <div className="flex items-center text-sm font-bold text-foreground group-hover:text-primary transition-colors">
-                  Read Article <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                {/* Glow effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-6">
+                    <span className="text-primary uppercase tracking-wider">{article.category}</span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {article.date}</span>
+                    <span className="w-1 h-1 rounded-full bg-border" />
+                    <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {article.readTime}</span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                    {article.title}
+                  </h3>
+                  
+                  <p className="text-muted-foreground leading-relaxed mb-8 flex-grow">
+                    {article.excerpt}
+                  </p>
+                  
+                  <Link href={`/insights/${article.slug}`} className="inline-flex items-center text-sm font-bold text-foreground group-hover:text-primary transition-colors w-fit">
+                    Read Article <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </Link>
                 </div>
               </motion.article>
             ))}

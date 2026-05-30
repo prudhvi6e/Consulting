@@ -9,6 +9,8 @@ import About from "@/pages/about";
 import Services from "@/pages/services";
 import Team from "@/pages/team";
 import Insights from "@/pages/insights";
+import ArticleDetail from "@/pages/article";
+import Careers from "@/pages/careers";
 import Contact from "@/pages/contact";
 import { AppLayout } from "@/components/layout/AppLayout";
 
@@ -23,6 +25,8 @@ function Router() {
         <Route path="/services" component={Services} />
         <Route path="/team" component={Team} />
         <Route path="/insights" component={Insights} />
+        <Route path="/insights/:slug" component={ArticleDetail} />
+        <Route path="/careers" component={Careers} />
         <Route path="/contact" component={Contact} />
         <Route component={NotFound} />
       </Switch>

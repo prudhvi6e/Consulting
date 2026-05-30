@@ -28,11 +28,14 @@ A futuristic, heavily-animated marketing website for PS Rao & Associates — a H
   - `src/index.css` — theme tokens (light + dark), fonts, reduced-motion media query. Source of truth for the palette.
   - `src/assets/brand/` — real logo (`ps-logo.png`/`.svg`) and team photos; `src/assets/images/` — generated hero/section imagery + the PSR monogram.
   - `src/assets/firm-content-reference.txt` — the firm's real services/team/contact copy used to write the site.
-- `artifacts/api-server/` and `lib/db/` exist from the scaffold but are NOT used by the website — it is a static marketing site with no backend.
+- `artifacts/api-server/` now hosts the AI backend used by article pages: `src/routes/ai.ts` exposes `POST /api/summarize` (gpt-4o-mini) and `POST /api/tts` (tts-1, voice nova). Both are zod-validated, return 503 when `OPENAI_API_KEY` is missing, and map OpenAI errors (429 quota, 401 bad key) to clear messages. `lib/db/` remains unused.
+- `artifacts/psrao-website/src/pages/article.tsx` — article reader at `/insights/:slug`; "Listen" calls `/api/tts` (audio/mpeg blob) and "AI Summary" calls `/api/summarize`. Article content lives in `src/data/articles.ts` (`articles`, `getArticleBySlug`, `getArticlePlainText`).
+- `artifacts/psrao-website/src/pages/careers.tsx` — Careers page at `/careers`; applications go through `mailto:` (no backend submit).
 
 ## Architecture decisions
 
-- Presentation-first marketing site: no API, no DB, no OpenAPI codegen. The contact form opens the visitor's email client via `mailto:` (no backend send) rather than faking a submission.
+- Presentation-first marketing site with one small backend concern: the AI article features (summarize + listen). No DB, no OpenAPI codegen. The contact and careers forms open the visitor's email client via `mailto:` (no backend send) rather than faking a submission.
+- AI requires the user's own `OPENAI_API_KEY` (standard `openai` client, NOT a Replit integration). The frontend calls the relative paths `/api/summarize` and `/api/tts` (routed by the shared proxy to api-server) — never prefixed with `BASE_URL`. Errors are always surfaced to the user (no silent fallbacks / fake summaries or audio).
 - Motion is central (framer-motion). Reduced motion is handled globally via `MotionConfig reducedMotion="user"` in `App.tsx` plus a `prefers-reduced-motion` CSS media query and a guarded `scrollTo`.
 - Palette is locked to the firm brand: ink `#0B1220`, deep navy, electric azure accent `#2E6BFF`. Display font Space Grotesk, body Inter.
 

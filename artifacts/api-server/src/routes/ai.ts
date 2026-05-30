@@ -22,6 +22,22 @@ function getClient(): OpenAI | null {
   return new OpenAI({ apiKey });
 }
 
+function mapOpenAiError(err: unknown): { status: number; error: string } {
+  if (err instanceof OpenAI.APIError) {
+    if (err.status === 429) {
+      return {
+        status: 429,
+        error:
+          "OpenAI quota exceeded. Add credits or check the billing on your OpenAI account, then try again.",
+      };
+    }
+    if (err.status === 401) {
+      return { status: 401, error: "Invalid OpenAI API key." };
+    }
+  }
+  return { status: 502, error: "AI request failed. Please try again." };
+}
+
 router.post("/summarize", async (req, res) => {
   const parsed = SummarizeBody.safeParse(req.body);
   if (!parsed.success) {
@@ -63,7 +79,8 @@ router.post("/summarize", async (req, res) => {
     return res.json({ summary });
   } catch (err) {
     req.log.error({ err }, "summarize failed");
-    return res.status(502).json({ error: "Failed to generate summary." });
+    const mapped = mapOpenAiError(err);
+    return res.status(mapped.status).json({ error: mapped.error });
   }
 });
 
@@ -97,7 +114,8 @@ router.post("/tts", async (req, res) => {
     return res.send(buffer);
   } catch (err) {
     req.log.error({ err }, "tts failed");
-    return res.status(502).json({ error: "Failed to generate audio." });
+    const mapped = mapOpenAiError(err);
+    return res.status(mapped.status).json({ error: mapped.error });
   }
 });
 

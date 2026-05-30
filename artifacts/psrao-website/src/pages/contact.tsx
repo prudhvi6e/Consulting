@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, Send, CheckCircle2, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { MapPin, Phone, Mail, Send, CheckCircle2, Calendar as CalendarIcon, Clock, Building2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -55,36 +55,46 @@ export default function Contact() {
   }
 
   return (
-    <div className="w-full pt-20">
-      <section className="py-20 md:py-32 bg-card border-b border-border">
+    <div className="w-full pt-20 bg-background relative overflow-hidden">
+      {/* Decorative Glow */}
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <section className="py-20 md:py-32 relative z-10 border-b border-border/50 bg-card/30 backdrop-blur-sm">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6">
-              Let's <span className="text-primary">Connect</span>
+             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+               Get in Touch
+             </div>
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-foreground mb-6 tracking-tight">
+              Let's <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">Connect.</span>
             </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">
-              Reach out for specialized corporate advice or to schedule a consultation with our partners.
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-light">
+              Reach out for specialized corporate advice or to schedule a strategic consultation with our partners.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-background">
+      <section className="py-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             
             {/* Contact Info & Map */}
             <div className="lg:col-span-5 space-y-12">
-              <div>
-                <h2 className="text-3xl font-display font-bold text-foreground mb-8">Corporate Office</h2>
+              <div className="p-8 rounded-3xl bg-card border border-border shadow-lg">
+                <h2 className="text-3xl font-display font-bold text-foreground mb-8 flex items-center gap-3">
+                  <Building2 className="w-8 h-8 text-primary" />
+                  Corporate Office
+                </h2>
                 <div className="space-y-8">
-                  <div className="flex gap-4 items-start">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <MapPin className="w-5 h-5 text-primary" />
+                  <div className="flex gap-4 items-start group">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <MapPin className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-foreground mb-2">Address</h4>
-                      <p className="text-muted-foreground leading-relaxed">
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">Address</h4>
+                      <p className="text-foreground leading-relaxed font-medium">
                         D.No. 6-3-347-22/2, Flat-10, 4th Floor,<br />
                         Iswarya Nilayam, Dwarakapuri Colony,<br />
                         Punjagutta, Hyderabad 500081, AP
@@ -92,25 +102,25 @@ export default function Contact() {
                     </div>
                   </div>
                   
-                  <div className="flex gap-4 items-start">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Phone className="w-5 h-5 text-primary" />
+                  <div className="flex gap-4 items-start group">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <Phone className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-foreground mb-2">Tele-Fax</h4>
-                      <p className="text-muted-foreground leading-relaxed">
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">Tele-Fax</h4>
+                      <p className="text-foreground leading-relaxed font-medium">
                         040-23352185 / 6
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex gap-4 items-start">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <Mail className="w-5 h-5 text-primary" />
+                  <div className="flex gap-4 items-start group">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <Mail className="w-5 h-5 text-primary group-hover:text-primary-foreground transition-colors" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-bold text-foreground mb-2">Email</h4>
-                      <p className="text-muted-foreground leading-relaxed">
+                      <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">Email</h4>
+                      <p className="text-foreground leading-relaxed font-medium">
                         info@psraoassociates.com
                       </p>
                     </div>
@@ -119,57 +129,62 @@ export default function Contact() {
               </div>
 
               {/* Map Embed */}
-              <div className="h-[300px] w-full rounded-2xl overflow-hidden border border-border shadow-sm">
-                <iframe 
-                  src="https://www.google.com/maps?q=Dwarakapuri%20Colony%2C%20Punjagutta%2C%20Hyderabad%20500081&output=embed" 
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade" 
-                  title="PS Rao & Associates Office Location" 
-                  className="w-full h-full bg-muted"
-                />
+              <div className="h-[400px] w-full rounded-3xl overflow-hidden border border-border shadow-lg p-2 bg-card">
+                <div className="w-full h-full rounded-2xl overflow-hidden">
+                  <iframe 
+                    src="https://www.google.com/maps?q=Dwarakapuri%20Colony%2C%20Punjagutta%2C%20Hyderabad%20500081&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade" 
+                    title="PS Rao & Associates Office Location" 
+                    className="w-full h-full bg-muted grayscale hover:grayscale-0 transition-all duration-700"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Contact Form */}
-            <div className="lg:col-span-7 bg-card border border-border rounded-3xl p-8 md:p-10 shadow-sm relative overflow-hidden">
+            <div className="lg:col-span-7 bg-card/60 backdrop-blur-xl border border-border rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+              {/* Decorative inner glow */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
+
               {isSuccess ? (
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="absolute inset-0 bg-card z-10 flex flex-col items-center justify-center text-center p-8"
+                  className="absolute inset-0 bg-card/95 backdrop-blur-md z-10 flex flex-col items-center justify-center text-center p-8"
                 >
-                  <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-6 text-green-500">
-                    <CheckCircle2 className="w-10 h-10" />
+                  <div className="w-24 h-24 bg-green-500/10 border border-green-500/20 rounded-3xl flex items-center justify-center mb-8 text-green-500 shadow-[0_0_30px_rgba(34,197,94,0.2)]">
+                    <CheckCircle2 className="w-12 h-12" />
                   </div>
-                  <h3 className="text-2xl font-display font-bold text-foreground mb-3">Ready to Send</h3>
-                  <p className="text-muted-foreground mb-8">Your email client should now be open with your consultation request prepared. Prefer to reach us directly? Email <span className="text-foreground font-medium">info@psraoassociates.com</span> or call <span className="text-foreground font-medium">040-23352185</span>.</p>
-                  <Button variant="outline" onClick={() => setIsSuccess(false)}>Compose Another</Button>
+                  <h3 className="text-3xl font-display font-bold text-foreground mb-4">Ready to Send</h3>
+                  <p className="text-lg text-muted-foreground mb-10 max-w-md font-light">Your email client should now be open with your consultation request prepared. Prefer to reach us directly? Email <span className="text-foreground font-medium">info@psraoassociates.com</span>.</p>
+                  <Button variant="outline" size="lg" className="rounded-full" onClick={() => setIsSuccess(false)}>Compose Another</Button>
                 </motion.div>
               ) : null}
 
-              <h3 className="text-2xl font-display font-bold text-foreground mb-6">Schedule a Consultation</h3>
+              <h3 className="text-3xl font-display font-bold text-foreground mb-8">Schedule a Consultation</h3>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 relative z-10">
                   
                   {/* Scheduling Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-muted/50 border border-border/50">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-8 rounded-3xl bg-background/50 border border-border shadow-inner">
                     <FormField
                       control={form.control}
                       name="date"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <FormLabel>Preferred Date</FormLabel>
+                          <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Preferred Date</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
                                   variant={"outline"}
                                   className={cn(
-                                    "w-full h-12 pl-3 text-left font-normal bg-background",
+                                    "w-full h-14 pl-4 text-left font-medium bg-card border-border hover:border-primary/50 transition-colors rounded-xl",
                                     !field.value && "text-muted-foreground"
                                   )}
                                 >
@@ -178,11 +193,11 @@ export default function Contact() {
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  <CalendarIcon className="ml-auto h-5 w-5 opacity-50" />
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-card" align="start">
+                            <PopoverContent className="w-auto p-0 bg-card border-border rounded-xl shadow-xl" align="start">
                               <Calendar
                                 mode="single"
                                 selected={field.value}
@@ -204,7 +219,7 @@ export default function Contact() {
                       name="time"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <FormLabel>Time Slot</FormLabel>
+                          <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Time Slot</FormLabel>
                           <div className="grid grid-cols-3 gap-2" role="group" aria-label="Preferred time slot">
                             {TIME_SLOTS.map((time) => (
                               <div key={time}>
@@ -214,12 +229,11 @@ export default function Contact() {
                                     variant={field.value === time ? "default" : "outline"}
                                     aria-pressed={field.value === time}
                                     className={cn(
-                                      "w-full bg-background transition-colors",
-                                      field.value === time && "bg-primary text-primary-foreground hover:bg-primary/90"
+                                      "w-full h-12 bg-card border-border transition-colors rounded-lg font-medium",
+                                      field.value === time && "bg-primary text-primary-foreground border-primary hover:bg-primary/90 shadow-[0_0_15px_rgba(46,107,255,0.3)]"
                                     )}
                                     onClick={() => field.onChange(time)}
                                   >
-                                    <Clock className="w-3 h-3 mr-2 hidden sm:inline" />
                                     {time}
                                   </Button>
                                 </FormControl>
@@ -239,9 +253,9 @@ export default function Contact() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Full Name</FormLabel>
+                          <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Full Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="John Doe" {...field} className="bg-background" />
+                            <Input placeholder="John Doe" {...field} className="h-14 bg-background/50 border-border rounded-xl px-4" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -252,9 +266,9 @@ export default function Contact() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email Address</FormLabel>
+                          <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Email Address</FormLabel>
                           <FormControl>
-                            <Input placeholder="john@company.com" {...field} className="bg-background" />
+                            <Input placeholder="john@company.com" {...field} className="h-14 bg-background/50 border-border rounded-xl px-4" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -266,9 +280,9 @@ export default function Contact() {
                     name="company"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company / Organization</FormLabel>
+                        <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Company / Organization</FormLabel>
                         <FormControl>
-                          <Input placeholder="Acme Corp (Optional)" {...field} className="bg-background" />
+                          <Input placeholder="Acme Corp (Optional)" {...field} className="h-14 bg-background/50 border-border rounded-xl px-4" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -279,11 +293,11 @@ export default function Contact() {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Topic of Consultation</FormLabel>
+                        <FormLabel className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Topic of Consultation</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Briefly describe your requirements..." 
-                            className="min-h-[120px] bg-background resize-none"
+                            className="min-h-[150px] bg-background/50 border-border rounded-xl p-4 resize-none text-base"
                             {...field} 
                           />
                         </FormControl>
@@ -291,9 +305,9 @@ export default function Contact() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={form.formState.isSubmitting}>
+                  <Button type="submit" className="w-full h-16 rounded-2xl text-lg font-bold shadow-[0_0_20px_rgba(46,107,255,0.3)] hover:shadow-[0_0_30px_rgba(46,107,255,0.5)] transition-all" disabled={form.formState.isSubmitting}>
                     {form.formState.isSubmitting ? "Preparing..." : (
-                      <>Prepare Consultation Request <Send className="ml-2 w-4 h-4" /></>
+                      <>Prepare Consultation Request <Send className="ml-2 w-5 h-5" /></>
                     )}
                   </Button>
                 </form>
