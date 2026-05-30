@@ -22,7 +22,7 @@ function Footer() {
           <div>
             <h4 className="font-display font-semibold text-white mb-6">Quick Links</h4>
             <ul className="space-y-4">
-              {['Home', 'About', 'Services', 'Team', 'Insights', 'Careers', 'Contact'].map((link) => (
+              {['Home', 'About', 'Services', 'Team', 'Insights', 'Contact'].map((link) => (
                 <li key={link}>
                   <Link href={link === 'Home' ? '/' : `/${link.toLowerCase()}`} className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group text-sm">
                     <ArrowRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-primary" />

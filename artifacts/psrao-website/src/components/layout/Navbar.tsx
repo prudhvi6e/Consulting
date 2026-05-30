@@ -28,7 +28,6 @@ export function Navbar() {
     { href: "/services", label: "Services" },
     { href: "/team", label: "Team" },
     { href: "/insights", label: "Insights" },
-    { href: "/careers", label: "Careers" },
   ];
 
   return (
