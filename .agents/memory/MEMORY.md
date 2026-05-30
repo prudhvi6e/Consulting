@@ -1,0 +1,1 @@
+- [Reading zip files](reading-zips.md) — no `unzip`/`python3` in this env; parse zips with Node by reading the central directory.

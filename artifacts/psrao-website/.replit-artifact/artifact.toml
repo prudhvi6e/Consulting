@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "PS Rao & Associates"
+version = "1.0.0"
+id = "artifacts/psrao-website"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19015
+
+[services.development]
+run = "pnpm --filter @workspace/psrao-website run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/psrao-website", "run", "build" ]
+publicDir = "artifacts/psrao-website/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19015"
+BASE_PATH = "/"

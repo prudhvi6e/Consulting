@@ -1,0 +1,20 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "jCCcnJa87jSrU4LvWDtXf"
+uri = "file://artifacts/psrao-website/src/assets/images/hero-bg.png"
+type = "image"
+title = "futuristic financial abstract data mesh"
+
+[[generated]]
+id = "2nEz_jSIlt4Bs96x2_MkR"
+uri = "file://artifacts/psrao-website/src/assets/images/psr-monogram.png"
+type = "image"
+title = "Mr PS Rao monogram portrait"
+
+[[generated]]
+id = "EJt2EF6cq-xaS4V-p6MLH"
+uri = "file://artifacts/psrao-website/src/assets/images/office-abstract.png"
+type = "image"
+title = "abstract corporate building architecture"

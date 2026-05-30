@@ -1,6 +1,6 @@
-# [Project name]
+# PS Rao & Associates
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A futuristic, heavily-animated marketing website for PS Rao & Associates — a Hyderabad-based firm of Company Secretaries and corporate advisors.
 
 ## Run & Operate
 
@@ -22,23 +22,33 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/psrao-website/` — the marketing website (react-vite, presentation-first, served at `/`). This is the primary product.
+  - `src/pages/` — one file per route: `home`, `about`, `services`, `team`, `insights`, `contact`, `not-found`.
+  - `src/components/layout/` — `Navbar.tsx` (sticky/condensing nav) and `AppLayout.tsx` (page transitions, scroll-to-top, footer).
+  - `src/index.css` — theme tokens (light + dark), fonts, reduced-motion media query. Source of truth for the palette.
+  - `src/assets/brand/` — real logo (`ps-logo.png`/`.svg`) and team photos; `src/assets/images/` — generated hero/section imagery + the PSR monogram.
+  - `src/assets/firm-content-reference.txt` — the firm's real services/team/contact copy used to write the site.
+- `artifacts/api-server/` and `lib/db/` exist from the scaffold but are NOT used by the website — it is a static marketing site with no backend.
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- Presentation-first marketing site: no API, no DB, no OpenAPI codegen. The contact form opens the visitor's email client via `mailto:` (no backend send) rather than faking a submission.
+- Motion is central (framer-motion). Reduced motion is handled globally via `MotionConfig reducedMotion="user"` in `App.tsx` plus a `prefers-reduced-motion` CSS media query and a guarded `scrollTo`.
+- Palette is locked to the firm brand: ink `#0B1220`, deep navy, electric azure accent `#2E6BFF`. Display font Space Grotesk, body Inter.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+A futuristic, animated marketing site positioning PS Rao & Associates as a next-generation corporate advisory firm. Pages: Home (flagship), About, Services (9 service areas), Team, Insights (placeholder articles), Contact. Fully responsive, dark/light theme, SEO meta per page.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- No emojis anywhere in the UI.
+- Site must look more modern/premium than the Big4 and vinodkothari.com — cinematic motion with credible advisory authority.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- In `index.css`, the Google Fonts `@import url(...)` MUST come before `@import "tailwindcss"`. Tailwind v4 inlines its import, and any `@import` placed after it is dropped ("@import must precede all other statements"), silently disabling the custom fonts.
+- framer-motion cubic-bezier `ease` arrays must be a fixed tuple (`as const`) or typed `Easing`, otherwise they infer as `number[]` and fail typecheck.
 
 ## Pointers
 
