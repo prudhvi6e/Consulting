@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { useReducedMotion } from "framer-motion";
 import { Briefcase, ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/visual/Reveal";
+import { TiltCard } from "@/components/visual/TiltCard";
+import { Parallax } from "@/components/visual/Parallax";
 
 const ROLES = [
   {
@@ -45,118 +47,124 @@ const BENEFITS = [
 ];
 
 export default function Careers() {
+  const prefersReduced = useReducedMotion();
+
   useEffect(() => {
     document.title = "Careers | PS Rao & Associates";
   }, []);
 
   return (
-    <div className="w-full pt-20 bg-background overflow-hidden relative">
-      {/* Background gradients */}
-      <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
-      <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
+    <div className="w-full pt-20 bg-transparent overflow-hidden relative">
+      <Parallax offset={150} className="absolute top-0 right-0 w-[60vw] max-w-[800px] h-[60vw] max-h-[800px] bg-blue-500/15 rounded-full blur-[180px] mix-blend-screen pointer-events-none animate-aurora" />
 
       {/* Hero */}
-      <section className="py-20 md:py-32 relative z-10">
+      <section className="py-24 md:py-40 relative z-10 glass-panel border-b border-white/10 shadow-xl">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-              Join Our Firm
-            </div>
-            <h1 className="text-4xl md:text-6xl font-display font-bold text-foreground mb-6 leading-tight">
-              Build the future of <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">corporate advisory.</span>
-            </h1>
-            <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-              We are a next-generation advisory firm blending decades of human expertise with futuristic efficiency. Join us to navigate the most complex corporate challenges.
-            </p>
-            <div className="flex gap-4">
-              <Button size="lg" className="rounded-full px-8 shadow-[0_0_20px_rgba(46,107,255,0.3)] hover:shadow-[0_0_30px_rgba(46,107,255,0.5)] transition-shadow" onClick={() => document.getElementById("open-roles")?.scrollIntoView({ behavior: "smooth" })}>
+          <div className="max-w-4xl">
+            <Reveal>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary/30 text-primary text-sm font-medium mb-8 shadow-[0_0_20px_rgba(46,107,255,0.2)]">
+                <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(46,107,255,1)] animate-pulse" />
+                Join Our Firm
+              </div>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <h1 className="text-6xl md:text-8xl font-display font-bold text-foreground mb-8 leading-[1.1] tracking-tight drop-shadow-md">
+                Build the future of <br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 drop-shadow-lg">corporate advisory.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <p className="text-2xl text-foreground/80 leading-relaxed mb-12 font-light max-w-3xl">
+                We are a next-generation advisory firm blending decades of human expertise with futuristic efficiency. Join us to navigate the most complex corporate challenges.
+              </p>
+            </Reveal>
+            <Reveal delay={0.3}>
+              <Button size="lg" className="rounded-full h-14 px-10 text-base font-bold shadow-[0_0_20px_rgba(46,107,255,0.4)] hover:shadow-[0_0_30px_rgba(46,107,255,0.6)] transition-all hover:scale-105" onClick={() => document.getElementById("open-roles")?.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" })}>
                 View Open Roles
               </Button>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Culture & Benefits */}
-      <section className="py-24 bg-card/50 border-y border-border relative z-10 backdrop-blur-sm">
+      <section className="py-32 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">Culture of Excellence</h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <Reveal>
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground mb-8 drop-shadow-sm">Culture of Excellence</h2>
+              <p className="text-xl text-foreground/80 leading-relaxed mb-12 font-light">
                 At PS Rao & Associates, we don't just advise; we partner. Our culture is built on deep intellectual curiosity, rigorous analysis, and a commitment to technological leverage. We empower our team with the best tools, including bespoke AI models, to deliver unparalleled accuracy and speed.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {BENEFITS.map((benefit, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <CheckCircle2 className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <span className="text-sm font-medium text-foreground/80">{benefit}</span>
+                  <div key={idx} className="flex items-start gap-4 p-4 rounded-2xl glass border border-white/10 hover:bg-white/5 transition-colors">
+                    <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5 drop-shadow-[0_0_8px_rgba(46,107,255,0.6)]" />
+                    <span className="text-base font-medium text-foreground/90 leading-snug">{benefit}</span>
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="relative h-[500px] rounded-3xl overflow-hidden bg-muted border border-border">
-               {/* Abstract placeholder for culture image, using gradients */}
-               <div className="absolute inset-0 bg-gradient-to-br from-secondary to-background" />
-               <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0,transparent_100%)] mix-blend-overlay" />
-               <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 rounded-full border border-white/20 flex items-center justify-center backdrop-blur-md">
-                     <Briefcase className="w-12 h-12 text-white/50" />
-                  </div>
-               </div>
-            </div>
+            </Reveal>
+            <Reveal delay={0.2}>
+              <TiltCard>
+                <div className="relative h-[600px] rounded-[3.5rem] overflow-hidden glass border border-white/20 shadow-2xl">
+                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-blue-500/10 mix-blend-overlay" />
+                   <div className="absolute inset-0 bg-[url('@/assets/images/office-abstract.png')] opacity-30 mix-blend-luminosity object-cover scale-110" />
+                   <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-40 h-40 rounded-full glass border border-white/30 flex items-center justify-center shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                         <Briefcase className="w-16 h-16 text-foreground drop-shadow-md" />
+                      </div>
+                   </div>
+                </div>
+              </TiltCard>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Open Roles */}
-      <section id="open-roles" className="py-24 bg-background relative z-10">
+      <section id="open-roles" className="py-32 relative z-10 glass-panel border-t border-white/10">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-4">Open Positions</h2>
-            <p className="text-lg text-muted-foreground">Find where you belong. We are always looking for exceptional talent to join our practices.</p>
-          </div>
+          <Reveal className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-5xl md:text-6xl font-display font-bold text-foreground mb-6 drop-shadow-sm">Open Positions</h2>
+            <p className="text-2xl text-foreground/70 font-light">Find where you belong. We are always looking for exceptional talent to join our practices.</p>
+          </Reveal>
 
-          <div className="max-w-4xl mx-auto space-y-4">
+          <div className="max-w-4xl mx-auto space-y-6">
             {ROLES.map((role, idx) => (
-              <motion.div 
-                key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
-              >
-                <div className="mb-4 md:mb-0">
-                  <h3 className="text-xl font-display font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{role.title}</h3>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground font-medium">
-                    <span className="bg-secondary/5 px-2 py-1 rounded">{role.department}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.experience}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.location}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.type}</span>
+              <Reveal key={idx} delay={idx * 0.1}>
+                <TiltCard glow={true}>
+                  <div className="group flex flex-col md:flex-row md:items-center justify-between p-8 md:p-10 rounded-[2.5rem] glass border border-white/10 hover:border-primary/40 hover:shadow-[0_15px_30px_rgba(46,107,255,0.15)] transition-all duration-500">
+                    <div className="mb-8 md:mb-0 relative z-10">
+                      <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-4 group-hover:text-primary transition-colors">{role.title}</h3>
+                      <div className="flex flex-wrap items-center gap-4 text-sm text-foreground/80 font-bold uppercase tracking-wider">
+                        <span className="bg-primary/10 text-primary border border-primary/20 px-3 py-1.5 rounded-full shadow-inner">{role.department}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                        <span>{role.experience}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                        <span>{role.location}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-white/20" />
+                        <span>{role.type}</span>
+                      </div>
+                    </div>
+                    <Button 
+                      asChild
+                      className="w-full md:w-auto h-14 rounded-full glass border border-white/20 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all group/btn shadow-md text-base font-bold relative z-10"
+                    >
+                      <a href={`mailto:info@psraoassociates.com?subject=Application for ${role.title}`}>
+                        Apply Now <ChevronRight className="ml-2 w-5 h-5 transform group-hover/btn:translate-x-1 transition-transform" />
+                      </a>
+                    </Button>
                   </div>
-                </div>
-                <Button 
-                  asChild
-                  variant="outline" 
-                  className="w-full md:w-auto rounded-full bg-background border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all group/btn"
-                >
-                  <a href={`mailto:info@psraoassociates.com?subject=Application for ${role.title}`}>
-                    Apply Now <ChevronRight className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
-                  </a>
-                </Button>
-              </motion.div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
           
-          <div className="mt-16 text-center">
-            <p className="text-muted-foreground">
-              Don't see a perfect fit? Send your resume to <a href="mailto:info@psraoassociates.com" className="text-primary hover:underline font-medium">info@psraoassociates.com</a>
+          <Reveal delay={0.4} className="mt-24 text-center glass p-10 rounded-[2.5rem] max-w-2xl mx-auto border border-white/10 shadow-lg">
+            <p className="text-xl text-foreground/80 font-light">
+              Don't see a perfect fit? Send your resume to <br/><a href="mailto:info@psraoassociates.com" className="text-primary hover:underline font-bold mt-2 inline-block">info@psraoassociates.com</a>
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
     </div>
