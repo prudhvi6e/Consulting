@@ -64,7 +64,7 @@
 
 /* LIGHT MODE */
 :root {
-  --background: 226 100% 98%; /* #F5F8FF slightly tinted */
+  --background: 204 100% 98%; /* sky-tinted */
   --foreground: 220 39% 11%; /* #111827 */
   --border: 220 13% 91%;
   
@@ -76,7 +76,7 @@
   --popover-foreground: 220 39% 11%;
   --popover-border: 220 13% 91%;
 
-  --primary: 222 100% 59%; /* #2E6BFF Electric Azure */
+  --primary: 200 98% 42%; /* #0291D6 Sky Blue */
   --primary-foreground: 0 0% 100%;
   
   --secondary: 220 54% 14%; /* #11203A Deep Navy */
@@ -85,14 +85,14 @@
   --muted: 220 14% 96%;
   --muted-foreground: 220 15% 45%;
 
-  --accent: 222 100% 95%; /* #EAF0FF */
-  --accent-foreground: 222 100% 59%;
+  --accent: 201 100% 95%; /* sky tint */
+  --accent-foreground: 200 98% 42%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
   --input: 220 13% 91%;
-  --ring: 222 100% 59%;
+  --ring: 200 98% 42%;
 
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: Georgia, serif;
@@ -113,7 +113,7 @@
   --popover-foreground: 220 14% 96%;
   --popover-border: 220 39% 15%;
 
-  --primary: 222 100% 59%; /* #2E6BFF Electric Azure */
+  --primary: 200 98% 42%; /* #0291D6 Sky Blue */
   --primary-foreground: 0 0% 100%;
   
   --secondary: 220 54% 14%; /* #11203A Deep Navy */
@@ -122,14 +122,14 @@
   --muted: 220 39% 15%;
   --muted-foreground: 220 15% 70%;
 
-  --accent: 222 100% 15%; /* Darker azure tint */
-  --accent-foreground: 222 100% 70%;
+  --accent: 200 80% 16%; /* Darker sky tint */
+  --accent-foreground: 200 95% 72%;
 
   --destructive: 0 62% 30%;
   --destructive-foreground: 220 14% 96%;
 
   --input: 220 39% 15%;
-  --ring: 222 100% 59%;
+  --ring: 200 98% 42%;
 }
 
 @layer base {
@@ -151,8 +151,34 @@
     transform: translateX(0);
   }
   to {
-    transform: translateX(-33.3333%);
+    transform: translateX(-50%);
   }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes sheen {
+  from { transform: translateX(-120%) skewX(-12deg); }
+  to { transform: translateX(220%) skewX(-12deg); }
+}
+
+/* Custom cursor: hide the native cursor while the blended cursor is active. */
+.cursor-none,
+.cursor-none * {
+  cursor: none !important;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -163,5 +189,10 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .cursor-none,
+  .cursor-none * {
+    cursor: auto !important;
   }
 }

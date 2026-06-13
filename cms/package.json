@@ -1,0 +1,15 @@
+{
+  "name": "psrao-cms",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Directus headless CMS for the PS Rao website (runs on the existing Supabase Postgres). Isolated from the pnpm workspace on purpose so native deps (sharp/esbuild) install correctly on all platforms.",
+  "scripts": {
+    "bootstrap": "directus bootstrap",
+    "start": "directus start",
+    "schema:snapshot": "directus schema snapshot ./snapshot.yaml --yes",
+    "schema:apply": "directus schema apply ./snapshot.yaml --yes"
+  },
+  "dependencies": {
+    "directus": "^11"
+  }
+}

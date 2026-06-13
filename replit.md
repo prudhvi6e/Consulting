@@ -28,11 +28,11 @@ A futuristic, heavily-animated marketing website for PS Rao & Associates — a H
   - `src/index.css` — theme tokens (light + dark), fonts, reduced-motion media query. Source of truth for the palette.
   - `src/assets/brand/` — real logo (`ps-logo.png`/`.svg`) and team photos; `src/assets/images/` — generated hero/section imagery + the PSR monogram.
   - `src/assets/firm-content-reference.txt` — the firm's real services/team/contact copy used to write the site.
-- `artifacts/api-server/` and `lib/db/` exist from the scaffold but are NOT used by the website — it is a static marketing site with no backend.
+- `artifacts/api-server/` — the website's own Express backend (everything self-contained; no external repo). Routes under `/api`: `available-slots` + `create-meeting` (Google Calendar booking via a service account, in `src/lib/google-calendar.ts`), `summarize` + `tts` (OpenAI, in `src/routes/ai.ts`), and `healthz`. Runs on port 5000; the website's Vite dev server proxies `/api` to it. Secrets live in `artifacts/api-server/.env` + `service-account-creds.json` (both gitignored; see `.env.example`). `lib/db/` exists from the scaffold but is not used.
 
 ## Architecture decisions
 
-- Presentation-first marketing site: no API, no DB, no OpenAPI codegen. The contact form opens the visitor's email client via `mailto:` (no backend send) rather than faking a submission.
+- Self-contained: the only backend is the in-repo `api-server`; the site does not depend on any other repo (the former external `Backend-master` is no longer used). The "Consult Us" page books a real Google Calendar meeting (with Meet link + email invites) through `api-server`; Insights articles use its OpenAI summary + TTS endpoints. DB/OpenAPI codegen remain unused.
 - Motion is central (framer-motion). Reduced motion is handled globally via `MotionConfig reducedMotion="user"` in `App.tsx` plus a `prefers-reduced-motion` CSS media query and a guarded `scrollTo`.
 - Palette is locked to the firm brand: ink `#0B1220`, deep navy, electric azure accent `#2E6BFF`. Display font Space Grotesk, body Inter.
 
@@ -49,7 +49,7 @@ A futuristic, animated marketing site positioning PS Rao & Associates as a next-
 
 - In `index.css`, the Google Fonts `@import url(...)` MUST come before `@import "tailwindcss"`. Tailwind v4 inlines its import, and any `@import` placed after it is dropped ("@import must precede all other statements"), silently disabling the custom fonts.
 - framer-motion cubic-bezier `ease` arrays must be a fixed tuple (`as const`) or typed `Easing`, otherwise they infer as `number[]` and fail typecheck.
-- Tailwind v4 does NOT ship a `marquee` keyframe. The home logo/industry marquee uses `animate-[marquee_..._linear_infinite]`, which silently does nothing unless `@keyframes marquee` is defined in `index.css`. It is (translateX(0) → translateX(-33.3333%) for the tripled `[...LOGOS,...LOGOS,...LOGOS]` track). Keep the keyframe shift in sync with the number of track copies.
+- Tailwind v4 does NOT ship a `marquee` keyframe. The home logo marquee uses `animate-[marquee_..._linear_infinite]`, which silently does nothing unless `@keyframes marquee` is defined in `index.css`. It is (translateX(0) → translateX(-50%)) for a track of **two** identical logo groups, each with a trailing `pr-16 md:pr-32` matching its internal `gap-16 md:gap-32` so the seam gap equals the inter-item gap and the wrap is seamless. Keep the keyframe shift (-50%) in sync with the two-copy track; if you change the copy count, change the shift too.
 
 ## Pointers
 

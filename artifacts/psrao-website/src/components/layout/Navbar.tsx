@@ -1,9 +1,10 @@
 import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logoUrl from "@/assets/brand/ps-logo.png";
+import logoUrl from "@/assets/brand/psr-mark.png";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -28,6 +29,7 @@ export function Navbar() {
     { href: "/services", label: "Services" },
     { href: "/team", label: "Team" },
     { href: "/insights", label: "Insights" },
+    { href: "/careers", label: "Careers" },
   ];
 
   return (
@@ -42,15 +44,23 @@ export function Navbar() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="bg-white p-1 rounded-sm">
-               <img src={logoUrl} alt="PS Rao & Associates" className="h-8 w-auto object-contain" />
+            <div className="bg-white p-1 rounded-md shadow-sm">
+               <img src={logoUrl} alt="PS Rao Corporate Solutions" className="h-9 w-9 object-contain" />
             </div>
-            <span className={cn(
-              "font-display font-bold text-lg tracking-tight transition-colors",
-              isScrolled ? "text-foreground" : "text-foreground dark:text-white"
-            )}>
-              PS RAO & ASSOCIATES
-            </span>
+            <div className="flex flex-col leading-none">
+              <span className={cn(
+                "font-display font-bold text-lg tracking-tight transition-colors",
+                isScrolled ? "text-foreground" : "text-foreground dark:text-white"
+              )}>
+                PS Rao
+              </span>
+              <span className={cn(
+                "text-[10px] font-semibold uppercase tracking-[0.2em] mt-0.5 transition-colors",
+                isScrolled ? "text-muted-foreground" : "text-foreground/70 dark:text-gray-300"
+              )}>
+                Corporate Solutions
+              </span>
+            </div>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
@@ -96,28 +106,46 @@ export function Navbar() {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-lg py-4 px-4 flex flex-col gap-4">
-          <ul className="flex flex-col gap-4">
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link 
-                  href={link.href}
-                  className={cn(
-                    "block text-base font-medium",
-                    location === link.href ? "text-primary" : "text-muted-foreground"
-                  )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border shadow-lg overflow-hidden"
+          >
+            <motion.ul
+              initial="hidden"
+              animate="visible"
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
+              className="flex flex-col gap-4 py-4 px-4"
+            >
+              {links.map((link) => (
+                <motion.li
+                  key={link.href}
+                  variants={{ hidden: { opacity: 0, x: -16 }, visible: { opacity: 1, x: 0 } }}
                 >
-                  {link.label}
+                  <Link
+                    href={link.href}
+                    className={cn(
+                      "block text-base font-medium",
+                      location === link.href ? "text-primary" : "text-muted-foreground"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.li>
+              ))}
+              <motion.li variants={{ hidden: { opacity: 0, x: -16 }, visible: { opacity: 1, x: 0 } }}>
+                <Link href="/contact" className="mt-2 flex w-full">
+                  <Button className="w-full">Consult Us <ArrowRight className="ml-2 h-4 w-4" /></Button>
                 </Link>
-              </li>
-            ))}
-          </ul>
-          <Link href="/contact" className="mt-4 flex w-full">
-            <Button className="w-full">Consult Us <ArrowRight className="ml-2 h-4 w-4" /></Button>
-          </Link>
-        </div>
-      )}
+              </motion.li>
+            </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
