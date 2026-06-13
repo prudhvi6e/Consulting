@@ -1,0 +1,10 @@
+# Cloudflare Pages config for the PS Rao site.
+#
+# Static site:  artifacts/psrao-website  (Vite -> dist/public)
+# API:          functions/api/*          (Pages Functions, same-origin /api/*)
+#
+# The functions use only Web-standard APIs (fetch + Web Crypto), so no
+# nodejs_compat flag is required.
+name = "psrao-consulting"
+pages_build_output_dir = "artifacts/psrao-website/dist/public"
+compatibility_date = "2025-06-01"
