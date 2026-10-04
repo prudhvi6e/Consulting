@@ -148,7 +148,7 @@ export default function Contact() {
       </section>
 
       {/* Scheduler */}
-      <section className="py-16 md:py-24 relative z-10">
+      <section id="schedule" className="py-16 md:py-24 relative z-10 scroll-mt-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="relative rounded-[2.5rem] text-white border border-white/15 shadow-2xl overflow-hidden">
             {/* Dark base + animated sky-blue motion shades, behind the glass */}

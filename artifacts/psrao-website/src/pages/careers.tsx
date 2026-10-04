@@ -130,35 +130,34 @@ export default function Careers() {
 
           <div className="max-w-4xl mx-auto space-y-4">
             {roles.map((role, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
               >
-                <div className="mb-4 md:mb-0">
-                  <h3 className="text-xl font-display font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{role.title}</h3>
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground font-medium">
-                    <span className="bg-secondary/5 px-2 py-1 rounded">{role.department}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.experience}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.location}</span>
-                    <span className="w-1 h-1 rounded-full bg-border" />
-                    <span>{role.type}</span>
-                  </div>
-                </div>
-                <Button 
-                  asChild
-                  variant="outline" 
-                  className="w-full md:w-auto rounded-full bg-background border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all group/btn"
+                <Link
+                  href={role.id ? `/careers/apply/${role.id}` : "/careers/apply"}
+                  data-cursor
+                  className="group flex flex-col md:flex-row md:items-center justify-between p-6 rounded-2xl border border-border bg-card hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer"
                 >
-                  <Link href={role.id ? `/careers/apply/${role.id}` : "/careers/apply"}>
-                    Apply Now <ChevronRight className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
+                  <div className="mb-4 md:mb-0">
+                    <h3 className="text-xl font-display font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{role.title}</h3>
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground font-medium">
+                      <span className="bg-secondary/5 px-2 py-1 rounded">{role.department}</span>
+                      <span className="w-1 h-1 rounded-full bg-border" />
+                      <span>{role.experience}</span>
+                      <span className="w-1 h-1 rounded-full bg-border" />
+                      <span>{role.location}</span>
+                      <span className="w-1 h-1 rounded-full bg-border" />
+                      <span>{role.type}</span>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center justify-center h-10 w-full md:w-auto px-5 rounded-full border border-border bg-background text-sm font-medium group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all">
+                    Apply Now <ChevronRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Link>
               </motion.div>
             ))}
           </div>

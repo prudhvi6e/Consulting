@@ -156,12 +156,38 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const lenis = useLenis();
 
   useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      // Let the page render, then scroll to the anchor (e.g. /contact#schedule).
+      let tries = 0;
+      const tick = () => {
+        const el = document.getElementById(hash);
+        if (el) {
+          if (lenis) lenis.scrollTo(el, { offset: -96 });
+          else el.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else if (tries++ < 20) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      return;
+    }
     if (lenis) {
       lenis.scrollTo(0, { immediate: true });
     } else {
       window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [location, lenis]);
+
+  // Same-page anchor clicks (e.g. already on /contact, click a #schedule link).
+  useEffect(() => {
+    const onHash = () => {
+      const el = document.getElementById(window.location.hash.slice(1));
+      if (!el) return;
+      if (lenis) lenis.scrollTo(el, { offset: -96 });
+      else el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, [lenis]);
 
   return (
     <div className="min-h-screen flex flex-col selection:bg-primary selection:text-white">

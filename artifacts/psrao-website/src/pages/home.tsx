@@ -288,7 +288,7 @@ export default function Home() {
                           </Link>
                         </Magnetic>
                         <Magnetic>
-                          <Link href="/contact" data-cursor className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                          <Link href="/contact#schedule" data-cursor className="inline-flex h-12 items-center justify-center rounded-md border border-input bg-background/50 backdrop-blur-sm px-8 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
                             Consult With Us
                           </Link>
                         </Magnetic>
@@ -567,7 +567,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground mb-6"><WordReveal text="Ready to transform your corporate governance?" /></h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">Get in touch with our team of experts to discuss how we can help you navigate complex regulatory environments and unlock growth.</p>
             <Magnetic>
-              <Link href="/contact" data-cursor className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+              <Link href="/contact#schedule" data-cursor className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                 Schedule a Consultation <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Magnetic>

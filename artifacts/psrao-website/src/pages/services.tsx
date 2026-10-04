@@ -280,7 +280,7 @@ export default function Services() {
               Tell us about your requirement and our partners will point you to the right practice — and the right next step.
             </p>
             <Magnetic>
-              <Link href="/contact" data-cursor className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+              <Link href="/contact#schedule" data-cursor className="inline-flex h-14 items-center justify-center rounded-full bg-primary px-10 text-base font-medium text-primary-foreground shadow transition-all hover:bg-primary/90 hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                 Consult Us <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Magnetic>

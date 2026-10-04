@@ -170,7 +170,7 @@ export function ChatWidget() {
               </button>
             </form>
             <div className="bg-card px-4 pb-3 -mt-1 text-[11px] text-muted-foreground text-center">
-              General information only — <Link href="/contact" onClick={() => setOpen(false)} className="text-primary hover:underline">book a free consultation</Link> for advice on your matter.
+              General information only — <Link href="/contact#schedule" onClick={() => setOpen(false)} className="text-primary hover:underline">book a free consultation</Link> for advice on your matter.
             </div>
           </motion.div>
         )}
