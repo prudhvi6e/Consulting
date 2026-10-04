@@ -42,7 +42,22 @@ const api = {
   upload: (file, folder) => { const fd = new FormData(); fd.append("file", file); fd.append("folder", folder || "uploads"); return api.req("POST", "/api/admin/media", fd, true); },
   del: (key) => api.req("DELETE", `/api/admin/media?key=${encodeURIComponent(key)}`),
   password: (current, next) => api.req("POST", "/api/admin/password", { current, next }),
+  ai: (task, input, context) => api.req("POST", "/api/admin/ai", { task, input, context }),
+  /** Streaming AI call: onDelta(fullSoFar) per chunk; resolves to the full text. */
+  async aiStream(task, input, context, onDelta, signal) {
+    const res = await fetch("/api/admin/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ task, input, context }), credentials: "same-origin", signal });
+    if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(d.error || `AI → ${res.status}`); }
+    const reader = res.body.getReader(); const dec = new TextDecoder(); let buf = "", full = "";
+    for (;;) {
+      const { value, done } = await reader.read(); if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split("\n"); buf = lines.pop() ?? "";
+      for (const l of lines) { if (!l.startsWith("data:")) continue; const p = l.slice(5).trim(); if (!p || p === "[DONE]") continue; try { const { delta } = JSON.parse(p); if (delta) { full += delta; onDelta(full, delta); } } catch {} }
+    }
+    return full;
+  },
 };
+let aiAvailable = true;
 
 // ---------------------------------------------------------------- toast
 let toastTimer;
@@ -68,7 +83,7 @@ const SCHEMAS = {
       { key: "address", label: "Address", type: "textarea" },
       { key: "phone", label: "Phone", type: "text" },
       { key: "email", label: "Email", type: "text" },
-      { key: "workingHours", label: "Working hours", type: "text" },
+      { key: "workingHours", label: "Working hours", type: "textarea", hint: "One line per day group, e.g. Mon–Fri: 10:00 AM – 7:00 PM" },
       { key: "mapEmbedUrl", label: "Google Maps embed URL", type: "text", hint: "Google Maps → Share → Embed a map → copy the src=\"…\" URL." },
       { key: "linkedin", label: "LinkedIn URL", type: "text" },
       { key: "twitter", label: "X / Twitter URL", type: "text" },
@@ -255,7 +270,8 @@ async function load(name) {
 function collectionView(main, name) {
   const s = SCHEMAS[name];
   const saveBtn = h("button", { class: "btn primary", disabled: !state.dirty[name], onclick: () => save(name) }, "Publish changes");
-  main.append(h("div", { class: "topbar" }, h("h2", {}, s.label), h("div", { class: "actions" }, h("span", { class: "badge-live" }, h("i"), "live"), saveBtn)));
+  const gen = aiAvailable && GENERATORS[name] ? h("button", { class: "btn ai-gen", onclick: () => GENERATORS[name](main, name) }, "✦ Generate with AI") : null;
+  main.append(h("div", { class: "topbar" }, h("h2", {}, s.label), h("div", { class: "actions" }, gen, h("span", { class: "badge-live" }, h("i"), "live"), saveBtn)));
   if (s.help) main.append(h("div", { class: "help" }, s.help));
   const body = h("div", {}, h("div", { class: "muted" }, "Loading…"));
   main.append(body);
@@ -330,6 +346,39 @@ function itemCard(name, item, idx, list, rerender, open) {
   return det;
 }
 
+// ---------------------------------------------------------------- AI assist
+const AI_ACTIONS = [["improve", "Improve"], ["grammar", "Fix grammar"], ["shorten", "Shorten"], ["expand", "Expand"], ["formal", "More formal"], ["simplify", "Simplify"]];
+/** Adds an ✦ AI menu to a text input/textarea. apply(text) writes the result back. */
+function aiAssist(getText, apply, opts = {}) {
+  if (!aiAvailable) return null;
+  const wrap = h("div", { class: "ai" });
+  const btn = h("button", { type: "button", class: "ai-btn", title: "AI assist" }, "✦ AI");
+  const menu = h("div", { class: "ai-menu" });
+  for (const [task, label] of AI_ACTIONS) menu.append(h("button", { type: "button", onclick: (e) => { e.stopPropagation(); menu.classList.remove("open"); run(task); } }, label));
+  btn.addEventListener("click", (e) => { e.stopPropagation(); document.querySelectorAll(".ai-menu.open").forEach((m) => m !== menu && m.classList.remove("open")); menu.classList.toggle("open"); });
+  document.addEventListener("click", () => menu.classList.remove("open"));
+  async function run(task) {
+    const text = getText();
+    if (!text.trim()) return toast("Type something first, then ask AI to work on it.", "err");
+    const before = text; const ctrl = new AbortController();
+    wrap.classList.add("busy"); btn.textContent = "✦ Working…";
+    const cancel = h("button", { type: "button", class: "ai-cancel", onclick: () => ctrl.abort() }, "Stop"); wrap.append(cancel);
+    try {
+      await api.aiStream(task, text, opts.context ? opts.context() : undefined, (full) => apply(full, true), ctrl.signal);
+      showUndo(() => apply(before, false));
+    } catch (ex) { if (ex.name !== "AbortError") toast(ex.message, "err"); apply(before, false); }
+    wrap.classList.remove("busy"); btn.textContent = "✦ AI"; cancel.remove();
+  }
+  wrap.append(btn, menu);
+  return wrap;
+}
+let undoTimer;
+function showUndo(fn) {
+  $(".toast")?.remove();
+  const t = h("div", { class: "toast ok" }, "Done. ", h("button", { class: "link", onclick: () => { fn(); t.remove(); toast("Reverted"); } }, "Undo"));
+  document.body.append(t); clearTimeout(undoTimer); undoTimer = setTimeout(() => t.remove(), 8000);
+}
+
 function fieldEditor(name, obj, f, onChange = () => {}) {
   const wrap = h("div", { class: `field ${f.type === "bool" ? "check" : ""}` });
   const set = (v) => { obj[f.key] = v; if (f.onInput) f.onInput(obj, v); markDirty(name); onChange(); };
@@ -342,9 +391,16 @@ function fieldEditor(name, obj, f, onChange = () => {}) {
   if (f.type === "text" || f.type === "date" || f.type === "color" || f.type === "number") {
     const inp = h("input", { type: f.type === "text" ? "text" : f.type, oninput: (e) => set(f.type === "number" ? Number(e.target.value) : e.target.value) });
     inp.value = obj[f.key] ?? (f.type === "color" ? "#2E6BFF" : "");
+    if (f.type === "text" && !/slug|url|email|phone|icon|span|suffix|name$|^(linkedin|twitter|facebook|instagram|mapEmbedUrl|date|readTime|salaryRange|experience|location|level|type)$/i.test(f.key)) {
+      const ai = aiAssist(() => inp.value, (v) => { inp.value = v.replace(/\n+/g, " ").trim(); set(inp.value); }, { context: () => ({ field: f.label, collection: name }) });
+      if (ai) label.append(ai);
+    }
     wrap.append(inp);
   } else if (f.type === "textarea") {
-    const ta = h("textarea", { oninput: (e) => set(e.target.value) }); ta.value = obj[f.key] ?? ""; wrap.append(ta);
+    const ta = h("textarea", { oninput: (e) => set(e.target.value) }); ta.value = obj[f.key] ?? "";
+    const ai = aiAssist(() => ta.value, (v) => { ta.value = v; set(v); }, { context: () => ({ field: f.label, collection: name }) });
+    if (ai) label.append(ai);
+    wrap.append(ta);
   } else if (f.type === "select") {
     const sel = h("select", { onchange: (e) => set(e.target.value) });
     sel.append(h("option", { value: "" }, "—"));
@@ -354,7 +410,10 @@ function fieldEditor(name, obj, f, onChange = () => {}) {
     wrap.append(imageField(name, obj, f, set));
   } else if (f.type === "lines") {
     const ta = h("textarea", { oninput: (e) => set(e.target.value.split("\n").map((x) => x.trim()).filter(Boolean)) });
-    ta.value = (obj[f.key] || []).join("\n"); wrap.classList.add("points"); wrap.append(ta, h("div", { class: "hint" }, "One per line."));
+    ta.value = (obj[f.key] || []).join("\n"); wrap.classList.add("points");
+    const ai = aiAssist(() => ta.value, (v) => { ta.value = v; set(v.split("\n").map((x) => x.replace(/^[-•*\d.)\s]+/, "").trim()).filter(Boolean)); }, { context: () => ({ field: f.label, collection: name, format: "one item per line" }) });
+    if (ai) label.append(ai);
+    wrap.append(ta, h("div", { class: "hint" }, "One per line."));
   } else if (f.type === "sections") {
     wrap.append(sectionsField(name, obj, f));
   } else if (f.type === "services") {
@@ -390,8 +449,9 @@ function sectionsField(name, obj, f) {
     list.forEach((sec, i) => {
       const headInp = h("input", { type: "text", placeholder: "Section heading (optional)", oninput: (e) => { sec.heading = e.target.value; markDirty(name); } }); headInp.value = sec.heading || "";
       const ta = h("textarea", { placeholder: "Paragraphs — separate with a blank line.", oninput: (e) => { sec.paragraphs = e.target.value.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean); markDirty(name); } }); ta.value = (sec.paragraphs || []).join("\n\n");
+      const secAi = aiAssist(() => ta.value, (v) => { ta.value = v; sec.paragraphs = v.split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean); markDirty(name); }, { context: () => ({ field: "article section", heading: sec.heading }) });
       wrap.append(h("div", { class: "section" },
-        h("div", { class: "head" }, headInp,
+        h("div", { class: "head" }, headInp, secAi,
           h("button", { class: "btn sm icon", type: "button", title: "Move up", onclick: () => { if (i > 0) { [list[i - 1], list[i]] = [list[i], list[i - 1]]; markDirty(name); draw(); } } }, "↑"),
           h("button", { class: "btn sm icon", type: "button", title: "Move down", onclick: () => { if (i < list.length - 1) { [list[i + 1], list[i]] = [list[i], list[i + 1]]; markDirty(name); draw(); } } }, "↓"),
           h("button", { class: "btn sm danger", type: "button", onclick: () => { list.splice(i, 1); markDirty(name); draw(); } }, "✕")),
@@ -434,6 +494,78 @@ function servicesField(name, obj, f) {
   draw();
   return wrap;
 }
+
+// ---------------------------------------------------------------- AI generators
+function modal(title, contentEl, width = "min(720px,100%)") {
+  const bg = h("div", { class: "modal-bg", onclick: (e) => { if (e.target === bg) bg.remove(); } });
+  bg.append(h("div", { class: "modal", style: `width:${width}` }, h("header", {}, h("h3", {}, title), h("button", { class: "btn sm", onclick: () => bg.remove() }, "Close")), h("div", { class: "content" }, contentEl)));
+  document.body.append(bg); return bg;
+}
+const field = (label, el, hint) => h("div", { class: "field" }, h("label", {}, label), el, hint ? h("div", { class: "hint" }, hint) : null);
+
+const GENERATORS = {
+  async articles(main, name) {
+    const topic = h("input", { type: "text", placeholder: "e.g. What the SEBI LODR 2025 amendments mean for mid-cap boards" });
+    const points = h("textarea", { placeholder: "Optional: key points, angle, or facts to include (one per line)" });
+    const length = h("select", {}, h("option", { value: "short" }, "Short (~500 words)"), h("option", { value: "medium", selected: true }, "Medium (~900 words)"), h("option", { value: "long" }, "Long (~1,400 words)"));
+    const tone = h("select", {}, h("option", { value: "authoritative" }, "Authoritative"), h("option", { value: "practical" }, "Practical / how-to"), h("option", { value: "explainer" }, "Plain-English explainer"));
+    const go = h("button", { class: "btn primary", onclick: async () => {
+      if (!topic.value.trim()) return toast("Enter a topic", "err");
+      go.disabled = true; go.textContent = "Writing… (20–40 s)";
+      try {
+        const a = await api.ai("article", "", { topic: topic.value, points: points.value, length: length.value, tone: tone.value });
+        const list = await load(name);
+        list.unshift({ id: uid(), title: a.title || topic.value, slug: a.slug || slugify(a.title || topic.value), status: "draft", category: a.category || "", date: new Date().toISOString().slice(0, 10), readTime: a.readTime || "", author: "PS Rao Corporate Solutions", authorRole: "Company Secretaries", excerpt: a.excerpt || "", content: Array.isArray(a.content) ? a.content : [] });
+        markDirty(name); bg.remove(); toast("Draft created — review it, then publish."); render();
+      } catch (ex) { toast(ex.message, "err"); go.disabled = false; go.textContent = "Write draft"; }
+    } }, "Write draft");
+    const bg = modal("Write an article with AI", h("div", { style: "display:grid;gap:14px" }, field("Topic", topic), field("Key points (optional)", points), h("div", { class: "row" }, field("Length", length), field("Tone", tone)), h("div", { class: "hint" }, "The draft is saved as a Draft (hidden from the site). Review facts before publishing — the AI can be wrong about law."), go));
+    topic.focus();
+  },
+  async jobs(main, name) {
+    const title = h("input", { type: "text", placeholder: "e.g. Associate – Securities Law" });
+    const dept = h("input", { type: "text", placeholder: "e.g. Capital Markets" });
+    const exp = h("input", { type: "text", placeholder: "e.g. 1-3 years" });
+    const notes = h("textarea", { placeholder: "Optional: anything specific — team, clients, must-haves" });
+    const go = h("button", { class: "btn primary", onclick: async () => {
+      if (!title.value.trim()) return toast("Enter a job title", "err");
+      go.disabled = true; go.textContent = "Writing…";
+      try {
+        const j = await api.ai("job", title.value, { title: title.value, department: dept.value, experience: exp.value, notes: notes.value });
+        const list = await load(name);
+        list.unshift({ id: uid(), title: title.value, status: "open", department: dept.value, experience: exp.value, location: "Hyderabad", type: "Full-time", level: "", salaryRange: "", expiresOn: "", description: j.description || "", responsibilities: j.responsibilities || [], requirements: j.requirements || [] });
+        markDirty(name); bg.remove(); toast("Job drafted — review, set a closing date, then publish."); render();
+      } catch (ex) { console.error(ex); toast(ex.message, "err"); go.disabled = false; go.textContent = "Draft job posting"; }
+    } }, "Draft job posting");
+    const bg = modal("Draft a job posting with AI", h("div", { style: "display:grid;gap:14px" }, field("Job title", title), h("div", { class: "row" }, field("Department", dept), field("Experience", exp)), field("Notes (optional)", notes), go));
+    title.focus();
+  },
+  async events(main, name) {
+    const now = new Date(); const nm = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    const month = h("input", { type: "month", value: `${nm.getFullYear()}-${String(nm.getMonth() + 1).padStart(2, "0")}` });
+    const out = h("div", { style: "display:grid;gap:8px" });
+    const go = h("button", { class: "btn primary", onclick: async () => {
+      go.disabled = true; go.textContent = "Looking up…"; out.replaceChildren();
+      try {
+        const r = await api.ai("events", "", { month: month.value });
+        const list = await load(name); const existing = new Set(list.map((e) => `${e.date}|${e.title.toLowerCase()}`));
+        const rows = (r.events || []).map((e) => {
+          const cb = h("input", { type: "checkbox" }); cb.checked = !existing.has(`${e.date}|${String(e.title).toLowerCase()}`);
+          return { e, cb, el: h("label", { class: "ai-row" }, cb, h("div", {}, h("div", {}, e.title, " ", h("span", { class: "chip" }, e.type === "event" ? "Event" : "Due date"), " ", h("span", { class: "muted" }, e.date)), h("div", { class: "hint" }, e.note || ""))) };
+        });
+        if (!rows.length) out.append(h("div", { class: "empty" }, "Nothing suggested."));
+        for (const r2 of rows) out.append(r2.el);
+        out.append(h("div", { class: "hint" }, "Suggestions are from AI and reflect typical statutory calendars — verify each against the current notification before publishing."));
+        out.append(h("button", { class: "btn primary", onclick: () => {
+          let n = 0; for (const { e, cb } of rows) if (cb.checked) { list.push({ id: uid(), title: e.title, type: e.type === "event" ? "event" : "duedate", date: e.date, color: e.type === "event" ? "#0ea5e9" : "#2E6BFF" }); n++; }
+          markDirty(name); bg.remove(); toast(`${n} added — review, then publish.`); render();
+        } }, "Add selected"));
+      } catch (ex) { toast(ex.message, "err"); }
+      go.disabled = false; go.textContent = "Suggest due dates";
+    } }, "Suggest due dates");
+    const bg = modal("Suggest compliance due dates", h("div", { style: "display:grid;gap:14px" }, field("Month", month), go, out));
+  },
+};
 
 // ---------------------------------------------------------------- media
 async function loadMedia() { if (!state.media) state.media = (await api.media()).items; return state.media; }
@@ -536,12 +668,38 @@ function applicationsView(main) {
             h("div", { class: "field" }, h("label", {}, "Status"), statusSel),
             h("div", { class: "field" }, h("label", {}, "Resume"), h("div", {}, h("a", { class: "btn sm", href: `/api/admin/applications/resume?key=${encodeURIComponent(a.resume)}`, target: "_blank" }, "Open PDF ↗"), " ", h("span", { class: "muted", style: "font-size:12px" }, a.resumeName))))),
         a.message ? h("div", { class: "field" }, h("label", {}, "Message from applicant"), h("div", { style: "white-space:pre-wrap;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px" }, a.message)) : null,
+        aiAvailable ? screeningPanel(a) : null,
         h("div", { class: "field" }, h("label", {}, "Notes"), notes),
         h("div", {}, h("button", { class: "btn sm danger", onclick: async () => { if (!confirm(`Delete application from ${a.name}? The resume will be removed too.`)) return; try { await api.req("DELETE", `/api/admin/applications?id=${a.id}`); apps = apps.filter((x) => x.id !== a.id); toast("Deleted"); draw(); } catch (ex) { toast(ex.message, "err"); } } }, "Delete application"))));
       body.append(det);
     }
   }
   draw().catch((e) => body.replaceChildren(h("div", { class: "empty" }, e.message)));
+}
+
+function screeningPanel(a) {
+  const box = h("div", { class: "ai-panel" });
+  const btn = h("button", { class: "btn ai-gen sm", onclick: async () => {
+    btn.disabled = true; btn.textContent = "✦ Reading resume…";
+    try {
+      const { text } = await api.req("GET", `/api/admin/applications/text?key=${encodeURIComponent(a.resume)}`);
+      if (!text || text.trim().length < 50) throw new Error("Could not read text from this PDF (it may be a scanned image).");
+      btn.textContent = "✦ Assessing…";
+      const jobs = state.data.jobs || (await api.get("jobs")) || []; const job = jobs.find((j) => j.id === a.jobId) || {};
+      const r = await api.ai("candidate", text, { jobTitle: a.jobTitle, requirements: (job.requirements || []).join("; "), experience: job.experience || "", form: `${a.recentJobTitle} at ${a.recentEmployer}, ${a.yearsOfExperience} yrs, ${a.city}` });
+      const fitCls = r.fit === "strong" ? "ok" : r.fit === "weak" ? "bad" : "";
+      box.replaceChildren(
+        h("div", { class: "ai-head" }, h("span", { class: `fit ${fitCls}` }, r.fit === "strong" ? "Strong fit" : r.fit === "weak" ? "Weak fit" : "Possible fit"), h("span", { class: "muted" }, `Score ${r.score}/100`), h("span", { class: "muted", style: "margin-left:auto;font-size:11px" }, "AI assessment — verify before deciding")),
+        h("p", {}, r.summary),
+        h("div", { class: "row" },
+          h("div", {}, h("b", {}, "Strengths"), h("ul", {}, ...(r.strengths || []).map((x) => h("li", {}, x)))),
+          h("div", {}, h("b", {}, "Gaps"), h("ul", {}, ...(r.gaps || []).map((x) => h("li", {}, x))))),
+        h("div", {}, h("b", {}, "Suggested interview questions"), h("ol", {}, ...(r.questions || []).map((x) => h("li", {}, x)))),
+        h("button", { class: "btn sm", onclick: () => { const n = `AI screening (${new Date().toLocaleDateString("en-IN")}): ${r.fit} fit, ${r.score}/100.\n${r.summary}\nStrengths: ${(r.strengths || []).join("; ")}\nGaps: ${(r.gaps || []).join("; ")}`; const ta = box.closest(".body").querySelector("textarea"); ta.value = ta.value ? ta.value + "\n\n" + n : n; ta.dispatchEvent(new Event("change")); } }, "Copy to notes"));
+    } catch (ex) { toast(ex.message, "err"); btn.disabled = false; btn.textContent = "✦ Screen with AI"; }
+  } }, "✦ Screen with AI");
+  box.append(h("div", { class: "muted", style: "font-size:13px" }, "Get a quick, impartial read of the resume against the role."), btn);
+  return h("div", { class: "field" }, h("label", {}, "AI screening"), box);
 }
 
 // ---------------------------------------------------------------- account
@@ -567,8 +725,11 @@ function accountView(main) {
 }
 
 // ---------------------------------------------------------------- boot
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { const b = $(".topbar .btn.primary"); if (b && !b.disabled) { e.preventDefault(); b.click(); } }
+});
 (async () => {
-  try { const me = await api.me(); state.user = me.user; }
+  try { const me = await api.me(); state.user = me.user; aiAvailable = me.ai !== false; }
   catch (e) { state.user = null; if (/not configured/i.test(e.message)) { document.body.innerHTML = `<div class="login"><div class="card"><h1>Admin not configured</h1><p class="muted">${e.message}</p></div></div>`; return; } }
   render();
 })();
