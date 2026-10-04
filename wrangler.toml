@@ -12,3 +12,13 @@ compatibility_date = "2025-06-01"
 # Workers AI binding used by functions/api/chat.ts as the chatbot engine
 [ai]
 binding = "AI"
+
+# Content store for the built-in /admin CMS (functions/api/cms/*, functions/api/admin/*)
+[[kv_namespaces]]
+binding = "CMS"
+id = "d2855f7c0cf6426e96890b8857f2c16d"
+
+# Media uploads (images) for the CMS, served via /api/media/<key>
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "psrao-media"

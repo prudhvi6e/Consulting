@@ -5,6 +5,8 @@ import { Briefcase, ArrowRight, CheckCircle2, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { RevealGroup, RevealItem, WordReveal } from "@/components/motion/Reveal";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { useQuery } from "@tanstack/react-query";
+import { getJobs } from "@/lib/cms";
 
 const ROLES = [
   {
@@ -47,6 +49,10 @@ const BENEFITS = [
 ];
 
 export default function Careers() {
+  const { data: cmsJobs } = useQuery({ queryKey: ["cms", "jobs"], queryFn: getJobs });
+  const roles = cmsJobs?.length
+    ? cmsJobs.map((j) => ({ title: j.title, department: (j as { department?: string }).department ?? "", experience: (j as { experience?: string }).experience ?? "", location: j.location, type: j.type }))
+    : ROLES;
   useEffect(() => {
     document.title = "Careers | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
@@ -123,7 +129,7 @@ export default function Careers() {
           </div>
 
           <div className="max-w-4xl mx-auto space-y-4">
-            {ROLES.map((role, idx) => (
+            {roles.map((role, idx) => (
               <motion.div 
                 key={idx}
                 initial={{ opacity: 0, y: 10 }}
