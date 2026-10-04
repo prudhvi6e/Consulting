@@ -25,6 +25,13 @@ OPENAI_TTS_VOICE=alloy
 GOOGLE_SERVICE_ACCOUNT_JSON=
 CALENDAR_IMPERSONATE_USER=
 
+# --- Job application notifications (/api/apply) — OPTIONAL
+# Applications are always stored (Admin → Applications); email alert only when both are set.
+# Resend free tier: 3,000/mo. Verify psrao.co.in in Resend to send from career@psrao.co.in.
+RESEND_API_KEY=
+CAREERS_NOTIFY_EMAIL=career@psrao.co.in
+NOTIFY_FROM=PS Rao Careers <careers@psrao.co.in>
+
 # --- Events & due dates fallback — OPTIONAL
 # Used only while KV content:events is empty (legacy feed from the old admin panel).
 EVENTS_SOURCE_URL=https://api.psrao.co.in/get/eventduedates

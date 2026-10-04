@@ -42,6 +42,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
 .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
 .topbar h2 { font-size: 22px; }
 .topbar .actions { display: flex; gap: 8px; align-items: center; }
+.topbar .actions input, .topbar .actions select { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 14px; }
+.topbar .actions input:focus, .topbar .actions select:focus { outline: none; border-color: var(--accent); }
 
 /* ---- controls ---- */
 .btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--border); background: var(--panel-2); border-radius: 8px; padding: 8px 14px; font-size: 14px; }

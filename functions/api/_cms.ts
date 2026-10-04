@@ -33,6 +33,7 @@ export const COLLECTIONS = [
   "articles",
   "events",
   "jobs",
+  "applications",
 ] as const;
 export type Collection = (typeof COLLECTIONS)[number];
 export const isCollection = (s: string): s is Collection => (COLLECTIONS as readonly string[]).includes(s);
@@ -135,6 +136,28 @@ export const slugify = (s: string) =>
   s.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
 
 export const newId = () => crypto.randomUUID();
+
+export type Application = {
+  id: string;
+  jobId: string | null;
+  jobTitle: string;
+  name: string;
+  email: string;
+  phone: string;
+  recentJobTitle: string;
+  recentEmployer: string;
+  yearsOfExperience: string;
+  city: string;
+  state: string;
+  country: string;
+  pincode: string;
+  message: string;
+  resume: string; // R2 key (private; downloaded via /api/admin/applications/resume?key=)
+  resumeName: string;
+  status: "new" | "shortlisted" | "interview" | "rejected" | "hired";
+  createdAt: string;
+  notes?: string;
+};
 
 export const MEDIA_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",

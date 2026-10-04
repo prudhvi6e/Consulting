@@ -18,6 +18,7 @@ export const onRequestPut: PagesFunction<CmsEnv> = async ({ request, env, params
   if (denied) return denied;
   const name = String(params.name);
   if (!isCollection(name)) return bad("Unknown collection", 404);
+  if (name === "applications") return bad("Use /api/admin/applications", 405);
   const text = await request.text();
   if (text.length > MAX_BYTES) return bad("Payload too large", 413);
   let value: unknown;

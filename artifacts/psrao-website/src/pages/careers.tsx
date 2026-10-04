@@ -51,8 +51,8 @@ const BENEFITS = [
 export default function Careers() {
   const { data: cmsJobs } = useQuery({ queryKey: ["cms", "jobs"], queryFn: getJobs });
   const roles = cmsJobs?.length
-    ? cmsJobs.map((j) => ({ title: j.title, department: (j as { department?: string }).department ?? "", experience: (j as { experience?: string }).experience ?? "", location: j.location, type: j.type }))
-    : ROLES;
+    ? cmsJobs.map((j) => ({ id: j.id, title: j.title, department: (j as { department?: string }).department ?? "", experience: (j as { experience?: string }).experience ?? "", location: j.location, type: j.type }))
+    : ROLES.map((r) => ({ id: "", ...r }));
   useEffect(() => {
     document.title = "Careers | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
@@ -155,9 +155,9 @@ export default function Careers() {
                   variant="outline" 
                   className="w-full md:w-auto rounded-full bg-background border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all group/btn"
                 >
-                  <a href={`mailto:career@psrao.co.in?subject=Application for ${role.title}`}>
+                  <Link href={role.id ? `/careers/apply/${role.id}` : "/careers/apply"}>
                     Apply Now <ChevronRight className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
-                  </a>
+                  </Link>
                 </Button>
               </motion.div>
             ))}
@@ -165,7 +165,7 @@ export default function Careers() {
           
           <div className="mt-16 text-center">
             <p className="text-muted-foreground">
-              Don't see a perfect fit? Send your resume to <a href="mailto:career@psrao.co.in" className="text-primary hover:underline font-medium">career@psrao.co.in</a>
+              Don't see a perfect fit? <Link href="/careers/apply" className="text-primary hover:underline font-medium">Send us your profile</Link> or write to <a href="mailto:career@psrao.co.in" className="text-primary hover:underline font-medium">career@psrao.co.in</a>
             </p>
           </div>
         </div>

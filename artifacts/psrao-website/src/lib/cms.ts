@@ -129,5 +129,5 @@ export const getArticles = () => list<Article>("articles");
 export const getArticle = (slug: string) => getArticles().then((a) => a.find((x) => x.slug === slug) ?? null);
 
 export type CmsEvent = { id: string; title: string; type: "event" | "duedate"; date: string; color: string };
-export type Job = { id: string; title: string; location: string; type: string; desc: string; sort: number | null };
+export type Job = { id: string; title: string; location: string; type: string; department?: string; experience?: string; level?: string; salaryRange?: string; expiresOn?: string; description?: string; responsibilities?: string[]; requirements?: string[]; status?: "open" | "closed"; sort: number | null };
 export const getJobs = () => list<Job>("jobs");

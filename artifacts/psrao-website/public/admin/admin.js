@@ -169,15 +169,23 @@ const SCHEMAS = {
     defaults: { status: "published", content: [] },
   },
   jobs: {
-    label: "Careers / openings", group: "Pages", title: (x) => x.title, sub: (x) => `${x.department || ""} · ${x.location || ""}`,
+    label: "Careers / openings", group: "Pages", title: (x) => x.title, sub: (x) => `${x.department || ""} · ${x.location || ""}${x.expiresOn ? " · closes " + x.expiresOn : ""}`, chip: (x) => (x.status === "closed" || (x.expiresOn && x.expiresOn < new Date().toISOString().slice(0, 10)) ? "draft" : null),
+    help: "Open positions on the Careers page. Closed or expired jobs are hidden from the site automatically. Each job gets an Apply form at /careers/apply/<id>.",
     fields: [
       { key: "title", label: "Job title", type: "text" },
+      { key: "status", label: "Status", type: "select", options: [["open", "Open"], ["closed", "Closed"]] },
       { key: "department", label: "Department", type: "text" },
       { key: "experience", label: "Experience", type: "text", hint: "e.g. 3-5 years" },
       { key: "location", label: "Location", type: "text" },
       { key: "type", label: "Type", type: "select", options: ["Full-time", "Part-time", "Internship", "Contract"] },
+      { key: "level", label: "Job level", type: "text", hint: "e.g. Associate, Management" },
+      { key: "salaryRange", label: "Salary range (optional)", type: "text", hint: "e.g. ₹3,00,000 – ₹4,50,000 per annum" },
+      { key: "expiresOn", label: "Last date to apply", type: "date" },
+      { key: "description", label: "Description", type: "textarea" },
+      { key: "responsibilities", label: "Responsibilities", type: "lines" },
+      { key: "requirements", label: "Requirements", type: "lines" },
     ],
-    defaults: { location: "Hyderabad", type: "Full-time" },
+    defaults: { location: "Hyderabad", type: "Full-time", status: "open", responsibilities: [], requirements: [] },
   },
 };
 const GROUPS = ["General", "Home page", "Pages"];
@@ -221,6 +229,7 @@ function shell() {
     side.append(h("div", { class: "group" }, g));
     for (const [name, s] of Object.entries(SCHEMAS)) if (s.group === g) side.append(h("button", { class: `nav ${state.view === name ? "active" : ""}`, onclick: () => { location.hash = name; } }, s.label, state.dirty[name] ? " •" : ""));
   }
+  side.append(h("button", { class: `nav ${state.view === "applications" ? "active" : ""}`, onclick: () => { location.hash = "applications"; } }, "Job applications"));
   side.append(h("div", { class: "group" }, "Library"));
   side.append(h("button", { class: `nav ${state.view === "media" ? "active" : ""}`, onclick: () => { location.hash = "media"; } }, "Media"));
   side.append(h("div", { class: "spacer" }));
@@ -229,6 +238,7 @@ function shell() {
   side.append(h("button", { class: "nav", onclick: async () => { await api.logout(); state.user = null; render(); } }, "Sign out"));
   const main = h("main", { class: "main" });
   if (state.view === "media") mediaView(main);
+  else if (state.view === "applications") applicationsView(main);
   else if (state.view === "account") accountView(main);
   else if (SCHEMAS[state.view]) collectionView(main, state.view);
   else { location.hash = "settings"; }
@@ -487,6 +497,51 @@ function mediaPicker(onPick) {
   document.body.append(bg);
   const draw = async () => { const items = (await loadMedia()).filter((x) => (x.type || "").startsWith("image/")); content.replaceChildren(uploader("uploads", draw), mediaGrid(items, (it) => { onPick(it.url); bg.remove(); })); };
   draw().catch((e) => content.replaceChildren(h("div", { class: "empty" }, e.message)));
+}
+
+// ---------------------------------------------------------------- applications
+const APP_STATUSES = [["new", "New"], ["shortlisted", "Shortlisted"], ["interview", "Interview"], ["rejected", "Rejected"], ["hired", "Hired"]];
+function applicationsView(main) {
+  const filter = h("select", { onchange: () => draw() }, h("option", { value: "" }, "All statuses"), ...APP_STATUSES.map(([v, l]) => h("option", { value: v }, l)));
+  const search = h("input", { type: "search", placeholder: "Search name, email, job…", oninput: () => draw(), style: "max-width:260px" });
+  main.append(h("div", { class: "topbar" }, h("h2", {}, "Job applications"), h("div", { class: "actions" }, search, filter, h("a", { class: "btn", href: "/api/admin/applications/export.csv" }, "Export CSV"))));
+  main.append(h("div", { class: "help" }, "Applications submitted through the Careers page. Resumes are private — only visible here. Update the status to keep track; the applicant is not notified automatically."));
+  const body = h("div", {}, h("div", { class: "muted" }, "Loading…"));
+  main.append(body);
+  let apps = null;
+  async function draw() {
+    if (!apps) apps = (await api.get("applications")) || [];
+    const q = search.value.trim().toLowerCase(); const st = filter.value;
+    const list = apps.filter((a) => (!st || a.status === st) && (!q || [a.name, a.email, a.jobTitle, a.city, a.recentEmployer].join(" ").toLowerCase().includes(q)));
+    body.replaceChildren();
+    if (!list.length) { body.append(h("div", { class: "empty" }, apps.length ? "No applications match." : "No applications yet.")); return; }
+    for (const a of list) {
+      const det = h("details", { class: "item" });
+      const chip = h("span", { class: `chip ${a.status === "new" ? "draft" : ""}` }, a.status);
+      det.append(h("summary", {},
+        h("span", { class: "title" }, a.name, " ", h("span", { class: "sub" }, "· ", a.jobTitle)),
+        chip,
+        h("span", { class: "sub" }, new Date(a.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }))));
+      const statusSel = h("select", { onchange: async (e) => { try { await api.req("PATCH", "/api/admin/applications", { id: a.id, status: e.target.value }); a.status = e.target.value; chip.textContent = a.status; chip.className = `chip ${a.status === "new" ? "draft" : ""}`; toast("Status updated"); } catch (ex) { toast(ex.message, "err"); } } }, ...APP_STATUSES.map(([v, l]) => h("option", { value: v }, l)));
+      statusSel.value = a.status;
+      const notes = h("textarea", { placeholder: "Internal notes (not visible to applicant)", onchange: async (e) => { try { await api.req("PATCH", "/api/admin/applications", { id: a.id, notes: e.target.value }); a.notes = e.target.value; toast("Notes saved"); } catch (ex) { toast(ex.message, "err"); } } }); notes.value = a.notes || "";
+      const row = (k, v) => h("div", { style: "display:grid;grid-template-columns:150px 1fr;gap:8px;font-size:14px" }, h("span", { class: "muted" }, k), h("span", {}, v || "—"));
+      det.append(h("div", { class: "body" },
+        h("div", { class: "row" },
+          h("div", { style: "display:grid;gap:8px" },
+            row("Email", h("a", { href: `mailto:${a.email}` }, a.email)), row("Phone", h("a", { href: `tel:${a.phone}` }, a.phone)),
+            row("Recent role", `${a.recentJobTitle} at ${a.recentEmployer}`), row("Experience", `${a.yearsOfExperience} years`),
+            row("Location", `${a.city}, ${a.state}, ${a.country} – ${a.pincode}`), row("Applied for", a.jobTitle), row("Submitted", new Date(a.createdAt).toLocaleString("en-IN"))),
+          h("div", { style: "display:grid;gap:10px;align-content:start" },
+            h("div", { class: "field" }, h("label", {}, "Status"), statusSel),
+            h("div", { class: "field" }, h("label", {}, "Resume"), h("div", {}, h("a", { class: "btn sm", href: `/api/admin/applications/resume?key=${encodeURIComponent(a.resume)}`, target: "_blank" }, "Open PDF ↗"), " ", h("span", { class: "muted", style: "font-size:12px" }, a.resumeName))))),
+        a.message ? h("div", { class: "field" }, h("label", {}, "Message from applicant"), h("div", { style: "white-space:pre-wrap;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px" }, a.message)) : null,
+        h("div", { class: "field" }, h("label", {}, "Notes"), notes),
+        h("div", {}, h("button", { class: "btn sm danger", onclick: async () => { if (!confirm(`Delete application from ${a.name}? The resume will be removed too.`)) return; try { await api.req("DELETE", `/api/admin/applications?id=${a.id}`); apps = apps.filter((x) => x.id !== a.id); toast("Deleted"); draw(); } catch (ex) { toast(ex.message, "err"); } } }, "Delete application"))));
+      body.append(det);
+    }
+  }
+  draw().catch((e) => body.replaceChildren(h("div", { class: "empty" }, e.message)));
 }
 
 // ---------------------------------------------------------------- account
