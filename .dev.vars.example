@@ -1,0 +1,30 @@
+# Cloudflare Pages Functions — runtime secrets for `wrangler pages dev`.
+# Copy to .dev.vars (gitignored). In production these are Pages project secrets:
+#   printf '%s' "$VALUE" | npx wrangler pages secret put NAME --project-name psrao-consulting
+# Bindings (KV CMS, R2 MEDIA, Workers AI) come from wrangler.toml, not from here.
+
+# --- Built-in CMS / admin (/admin, functions/api/admin/*) — REQUIRED for the editor
+# Generate: node -e "const c=require('crypto'),s=c.randomBytes(16),h=c.pbkdf2Sync(process.argv[1],s,100000,32,'sha256');console.log(`pbkdf2$100000$${s.toString('base64')}$${h.toString('base64')}`)" 'your-password'
+ADMIN_PASSWORD_HASH=
+# Random 32+ bytes: node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"
+ADMIN_SESSION_SECRET=
+# Display name shown in the admin UI (default: admin)
+ADMIN_USER=psrao
+
+# --- Chatbot (/api/chat) + Insights summarize/TTS — OPTIONAL
+# Without a key the chatbot falls back to Workers AI (binding AI); summarize/TTS return 503.
+OPENAI_API_KEY=
+OPENAI_CHAT_MODEL=gpt-4o-mini
+OPENAI_SUMMARY_MODEL=gpt-4o-mini
+OPENAI_TTS_MODEL=gpt-4o-mini-tts
+OPENAI_TTS_VOICE=alloy
+
+# --- Consultation booking (/api/available-slots, /api/create-meeting) — OPTIONAL
+# Service-account JSON (single line) with domain-wide delegation to Calendar; the
+# calendar owner to impersonate when creating Meet events.
+GOOGLE_SERVICE_ACCOUNT_JSON=
+CALENDAR_IMPERSONATE_USER=
+
+# --- Events & due dates fallback — OPTIONAL
+# Used only while KV content:events is empty (legacy feed from the old admin panel).
+EVENTS_SOURCE_URL=https://api.psrao.co.in/get/eventduedates

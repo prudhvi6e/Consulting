@@ -58,4 +58,5 @@ Thumbs.db
 .wrangler/
 
 .dev.vars
+!.dev.vars.example
 cms/.env
