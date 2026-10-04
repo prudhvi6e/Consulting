@@ -8,3 +8,7 @@
 name = "psrao-consulting"
 pages_build_output_dir = "artifacts/psrao-website/dist/public"
 compatibility_date = "2025-06-01"
+
+# Workers AI binding used by functions/api/chat.ts as the chatbot engine
+[ai]
+binding = "AI"

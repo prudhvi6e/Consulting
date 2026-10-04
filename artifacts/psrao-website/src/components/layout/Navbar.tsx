@@ -45,7 +45,7 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="bg-white p-1 rounded-md shadow-sm">
-               <img src={logoUrl} alt="PS Rao Corporate Solutions" className="h-9 w-9 object-contain" />
+               <img src={logoUrl} alt="PS Rao Corporate Solutions Pvt. Ltd." className="h-9 w-9 object-contain" />
             </div>
             <div className="flex flex-col leading-none">
               <span className={cn(
@@ -58,7 +58,7 @@ export function Navbar() {
                 "text-[10px] font-semibold uppercase tracking-[0.2em] mt-0.5 transition-colors",
                 isScrolled ? "text-muted-foreground" : "text-foreground/70 dark:text-gray-300"
               )}>
-                Corporate Solutions
+                Corporate Solutions Pvt. Ltd.
               </span>
             </div>
           </Link>

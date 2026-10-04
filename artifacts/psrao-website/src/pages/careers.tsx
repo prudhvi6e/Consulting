@@ -48,7 +48,7 @@ const BENEFITS = [
 
 export default function Careers() {
   useEffect(() => {
-    document.title = "Careers | PS Rao Corporate Solutions";
+    document.title = "Careers | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   return (
@@ -89,7 +89,7 @@ export default function Careers() {
             <div>
               <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-6">Culture of Excellence</h2>
               <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                At PS Rao Corporate Solutions, we don't just advise; we partner. Our culture is built on deep intellectual curiosity, rigorous analysis, and a commitment to technological leverage. We empower our team with the best tools, including bespoke AI models, to deliver unparalleled accuracy and speed.
+                At PS Rao Corporate Solutions Pvt. Ltd., we don't just advise; we partner. Our culture is built on deep intellectual curiosity, rigorous analysis, and a commitment to technological leverage. We empower our team with the best tools, including bespoke AI models, to deliver unparalleled accuracy and speed.
               </p>
               <RevealGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4" stagger={0.08}>
                 {BENEFITS.map((benefit, idx) => (
@@ -149,7 +149,7 @@ export default function Careers() {
                   variant="outline" 
                   className="w-full md:w-auto rounded-full bg-background border-border hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all group/btn"
                 >
-                  <a href={`mailto:info@psraoassociates.com?subject=Application for ${role.title}`}>
+                  <a href={`mailto:career@psrao.co.in?subject=Application for ${role.title}`}>
                     Apply Now <ChevronRight className="ml-2 w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" />
                   </a>
                 </Button>
@@ -159,7 +159,7 @@ export default function Careers() {
           
           <div className="mt-16 text-center">
             <p className="text-muted-foreground">
-              Don't see a perfect fit? Send your resume to <a href="mailto:info@psraoassociates.com" className="text-primary hover:underline font-medium">info@psraoassociates.com</a>
+              Don't see a perfect fit? Send your resume to <a href="mailto:career@psrao.co.in" className="text-primary hover:underline font-medium">career@psrao.co.in</a>
             </p>
           </div>
         </div>

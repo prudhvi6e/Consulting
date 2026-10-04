@@ -10,7 +10,7 @@ import { WordReveal } from "@/components/motion/Reveal";
 
 export default function Insights() {
   useEffect(() => {
-    document.title = "Insights & Advisory | PS Rao Corporate Solutions";
+    document.title = "Insights & Advisory | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.

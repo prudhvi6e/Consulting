@@ -40,6 +40,7 @@ import { Reveal, WordReveal } from "@/components/motion/Reveal";
 import { Parallax } from "@/components/motion/Parallax";
 import { getHeroSlides, getCapabilities, getIndustries, getStats, getClientLogos, assetUrl } from "@/lib/cms";
 import { getIcon } from "@/lib/icons";
+import { EventsDueDates } from "@/components/EventsDueDates";
 
 // Real client logos (downloaded from the firm's CMS into src/assets/clients).
 const clientLogoModules = import.meta.glob("../assets/clients/*.{png,jpg,jpeg,webp}", {
@@ -159,7 +160,7 @@ export default function Home() {
   const prefersReducedMotion = useReducedMotion();
   
   useEffect(() => {
-    document.title = "PS Rao Corporate Solutions | Corporate Advisors & Company Secretaries";
+    document.title = "PS Rao Corporate Solutions Pvt. Ltd. | Corporate Advisors & Company Secretaries";
   }, []);
 
   // Hero Carousel Setup
@@ -397,6 +398,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Events & Due Dates */}
+      <EventsDueDates />
 
       {/* Flagship Capabilities — bento grid */}
       <section className="py-16 md:py-24 bg-background relative">

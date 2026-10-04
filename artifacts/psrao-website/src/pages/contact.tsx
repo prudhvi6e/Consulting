@@ -54,7 +54,7 @@ export default function Contact() {
   const [result, setResult] = useState<CreateMeetingResult | null>(null);
 
   useEffect(() => {
-    document.title = "Contact Us | PS Rao Corporate Solutions";
+    document.title = "Contact Us | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   const form = useForm<FormValues>({
@@ -224,7 +224,7 @@ export default function Contact() {
                       <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-sky-300">consultation</span> here.
                     </h2>
                     <p className="text-white/70 leading-relaxed max-w-md mb-8">
-                      A quick meeting where we discuss how PS Rao Corporate Solutions can help with your secretarial, compliance and governance needs. You'll receive a Google Calendar invite with a Meet link.
+                      A quick meeting where we discuss how PS Rao Corporate Solutions Pvt. Ltd. can help with your secretarial, compliance and governance needs. You'll receive a Google Calendar invite with a Meet link.
                     </p>
                     <div className="inline-flex items-center gap-2 text-white/80 text-sm font-medium rounded-full border border-white/15 bg-white/5 px-4 py-2">
                       <Clock className="w-4 h-4 text-primary" /> 30 min
@@ -462,7 +462,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold uppercase tracking-wider text-muted-foreground mb-2">Email</h4>
-                    <p className="text-foreground leading-relaxed font-medium">{settings?.email ?? "info@psraoassociates.com"}</p>
+                    <p className="text-foreground leading-relaxed font-medium">{settings?.email ?? "info@psrao.co.in"}</p>
                   </div>
                 </div>
                 <div className="flex gap-4 items-start group">
@@ -489,7 +489,7 @@ export default function Contact() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  title="PS Rao Corporate Solutions Office Location"
+                  title="PS Rao Corporate Solutions Pvt. Ltd. Office Location"
                   className="w-full h-full bg-muted grayscale hover:grayscale-0 transition-all duration-700"
                 />
               </div>

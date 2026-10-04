@@ -32,7 +32,7 @@ export default function ArticleDetail() {
 
   useEffect(() => {
     if (raw) {
-      document.title = `${raw.title} | Insights | PS Rao Corporate Solutions`;
+      document.title = `${raw.title} | Insights | PS Rao Corporate Solutions Pvt. Ltd.`;
     }
   }, [raw]);
 
@@ -52,7 +52,7 @@ export default function ArticleDetail() {
     category: raw.category ?? "",
     date: raw.date ?? "",
     readTime: raw.readTime ?? "",
-    author: raw.author ?? "PS Rao Corporate Solutions",
+    author: raw.author ?? "PS Rao Corporate Solutions Pvt. Ltd.",
     authorRole: raw.authorRole ?? "",
     content: (raw.content ?? []) as ArticleSection[],
   };

@@ -11,6 +11,7 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Cursor } from "@/components/motion/Cursor";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
 import psrMark from "@/assets/brand/psr-mark.png";
+import { ChatWidget } from "@/components/ChatWidget";
 
 const FOOTER_LINKS = ["Home", "About", "Services", "Team", "Insights", "Careers", "Contact"];
 const FOOTER_SERVICES = [
@@ -47,11 +48,11 @@ function Footer() {
               <div className="space-y-7">
                 <div className="flex items-center gap-3.5">
                   <div className="bg-white p-1.5 rounded-lg shrink-0">
-                    <img src={psrMark} alt="PS Rao Corporate Solutions" className="h-11 w-11 object-contain" />
+                    <img src={psrMark} alt="PS Rao Corporate Solutions Pvt. Ltd." className="h-11 w-11 object-contain" />
                   </div>
                   <div className="space-y-1.5">
                     <h3 className="font-display text-2xl font-bold text-white tracking-tight leading-none">PS Rao</h3>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary whitespace-nowrap leading-none">Corporate Solutions</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary whitespace-nowrap leading-none">Corporate Solutions Pvt. Ltd.</p>
                   </div>
                 </div>
                 <p className="text-muted-foreground text-sm leading-7 max-w-xs">
@@ -101,7 +102,7 @@ function Footer() {
                     <span className="whitespace-pre-line">{settings?.address ?? "6-3-683/10, Flat-102, Suseela Sadan,\nAnand Nagar Road, Khairtabad,\nHyderabad - 500004, Telangana"}</span>
                   </li>
                   <li className="flex items-center gap-3"><Phone className="w-5 h-5 text-primary shrink-0" /><span>{settings?.phone ?? "+91 40 2335 2185"}</span></li>
-                  <li className="flex items-center gap-3"><Mail className="w-5 h-5 text-primary shrink-0" /><span>{settings?.email ?? "info@psraoassociates.com"}</span></li>
+                  <li className="flex items-center gap-3"><Mail className="w-5 h-5 text-primary shrink-0" /><span>{settings?.email ?? "info@psrao.co.in"}</span></li>
                 </ul>
               </div>
             </div>
@@ -110,7 +111,7 @@ function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-8 mt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <p>© 2012–2026 PS Rao Corporate Solutions. All rights reserved.</p>
+          <p>© 2012–2026 PS Rao Corporate Solutions Pvt. Ltd. All rights reserved.</p>
           <p className="hidden md:block">Company Secretaries · Hyderabad, India</p>
           <button onClick={toTop} data-cursor className="inline-flex items-center gap-2 hover:text-primary transition-colors group">
             Back to top
@@ -182,6 +183,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

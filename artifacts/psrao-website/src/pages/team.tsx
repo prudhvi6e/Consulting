@@ -28,7 +28,7 @@ const teamMembers = [
 
 export default function Team() {
   useEffect(() => {
-    document.title = "Our Team | PS Rao Corporate Solutions";
+    document.title = "Our Team | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.
@@ -89,7 +89,7 @@ export default function Team() {
           </div>
           
           <Reveal className="mt-32 bg-primary/5 border border-primary/20 rounded-3xl p-10 md:p-16 text-center max-w-4xl mx-auto backdrop-blur-sm">
-            <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-5">Supported by 20+ dedicated professionals</h3>
+            <h3 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-5">Supported by 25 dedicated professionals</h3>
             <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
               Our leadership is backed by a robust team of qualified associates, article assistants, and support staff working round the clock to ensure seamless compliance for your business.
             </p>

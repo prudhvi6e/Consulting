@@ -179,7 +179,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
 
 export default function Services() {
   useEffect(() => {
-    document.title = "Services | PS Rao Corporate Solutions";
+    document.title = "Services | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.

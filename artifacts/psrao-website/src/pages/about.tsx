@@ -11,7 +11,7 @@ type Milestone = { label: string; to?: number; suffix?: string; value?: string }
 const MILESTONES: Milestone[] = [
   { to: 20, suffix: "+", label: "Years Experience" },
   { to: 25, suffix: "+", label: "Team Members" },
-  { to: 9, suffix: "+", label: "Service Areas" },
+  { to: 13, suffix: "+", label: "Service Areas" },
   { value: "24/7", label: "Client Support" },
 ];
 
@@ -30,7 +30,7 @@ const staggerContainer = {
 
 export default function About() {
   useEffect(() => {
-    document.title = "About Us | PS Rao Corporate Solutions";
+    document.title = "About Us | PS Rao Corporate Solutions Pvt. Ltd.";
   }, []);
 
   return (
