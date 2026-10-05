@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useLenis } from "lenis/react";
 import { useQuery } from "@tanstack/react-query";
@@ -9,9 +9,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, Mail, ArrowRight, ArrowUp, Linkedin, Twitter, Instagram } from "lucide-react";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Cursor } from "@/components/motion/Cursor";
+import { Deferred } from "@/components/motion/Deferred";
 import { Reveal, RevealGroup, RevealItem } from "@/components/motion/Reveal";
-import psrMark from "@/assets/brand/psr-mark.png";
-import { ChatWidget } from "@/components/ChatWidget";
+import psrMark from "@/assets/brand/psr-mark.webp";
+import { lazy, Suspense } from "react";
+const ChatWidget = lazy(() => import("@/components/ChatWidget").then((m) => ({ default: m.ChatWidget })));
 
 const FOOTER_LINKS = ["Home", "About", "Services", "Team", "Insights", "Careers", "Contact"];
 const FOOTER_SERVICES = [
@@ -154,6 +156,9 @@ const pageVariants = {
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const lenis = useLenis();
+  // true until the first route change; lets the initial page skip its entrance animation
+  const firstPaint = useRef(true);
+  useEffect(() => { return () => { firstPaint.current = false; }; }, [location]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
@@ -192,13 +197,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col selection:bg-primary selection:text-white">
       <ScrollProgress />
-      <Cursor />
+      <Deferred><Cursor /></Deferred>
       <Navbar />
       <main className="flex-1 w-full relative z-0 mt-16 md:mt-0">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={location}
-            initial="initial"
+            // On first paint the pre-rendered HTML is already visible; animating from opacity:0
+            // would hide the LCP until JS runs. Entrance animation applies to route changes only.
+            initial={firstPaint.current ? false : "initial"}
             animate="enter"
             exit="exit"
             variants={pageVariants}
@@ -209,7 +216,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
       </main>
       <Footer />
-      <ChatWidget />
+      <Deferred delay={800}><Suspense fallback={null}><ChatWidget /></Suspense></Deferred>
     </div>
   );
 }

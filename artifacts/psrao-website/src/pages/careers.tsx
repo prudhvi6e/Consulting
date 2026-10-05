@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Briefcase, ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
@@ -53,12 +53,11 @@ export default function Careers() {
   const roles = cmsJobs?.length
     ? cmsJobs.map((j) => ({ id: j.id, title: j.title, department: (j as { department?: string }).department ?? "", experience: (j as { experience?: string }).experience ?? "", location: j.location, type: j.type }))
     : ROLES.map((r) => ({ id: "", ...r }));
-  useEffect(() => {
-    document.title = "Careers | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   return (
     <div className="w-full pt-20 bg-background overflow-hidden relative">
+      <Seo title="Careers" description="Open positions for Company Secretaries, associates, paralegals and trainees at PS Rao Corporate Solutions, Hyderabad." path="/careers" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "Careers", path: "/careers" }])]} />
       {/* Background gradients */}
       <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
       <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-sky-400/15 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />

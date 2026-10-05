@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { Link } from "wouter";
@@ -9,9 +9,7 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { WordReveal } from "@/components/motion/Reveal";
 
 export default function Insights() {
-  useEffect(() => {
-    document.title = "Insights & Advisory | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.
   const { data: cmsArticles } = useQuery({ queryKey: ["cms", "articles"], queryFn: getArticles });
@@ -19,6 +17,7 @@ export default function Insights() {
 
   return (
     <div className="w-full pt-20 bg-background relative overflow-hidden">
+      <Seo title="Insights & Advisory" description="Articles on SEBI LODR, Companies Act, FEMA, restructuring and governance from PS Rao Corporate Solutions." path="/insights" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "Insights", path: "/insights" }])]} />
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px] mix-blend-screen pointer-events-none" />
 

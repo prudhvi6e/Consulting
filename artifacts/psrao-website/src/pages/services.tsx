@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { WordReveal } from "@/components/motion/Reveal";
 import { Magnetic } from "@/components/motion/Magnetic";
-import { GlobeOrbit } from "@/components/motion/GlobeOrbit";
+import { lazy, Suspense } from "react";
+import { Deferred } from "@/components/motion/Deferred";
+const GlobeOrbit = lazy(() => import("@/components/motion/GlobeOrbit").then((m) => ({ default: m.GlobeOrbit })));
 import { getServiceGroups } from "@/lib/cms";
 import { getIcon } from "@/lib/icons";
 import { Building2, Briefcase, FileCheck, Network, TrendingUp, Gavel, BookOpen, Globe2, Landmark, Stamp, Lightbulb, ArrowRight, type LucideIcon } from "lucide-react";
@@ -178,9 +180,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
 }
 
 export default function Services() {
-  useEffect(() => {
-    document.title = "Services | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.
   const { data: cmsGroups } = useQuery({ queryKey: ["cms", "serviceGroups"], queryFn: getServiceGroups });
@@ -200,6 +200,7 @@ export default function Services() {
 
   return (
     <div className="w-full pt-20 bg-background relative overflow-hidden">
+      <Seo title="Services" description="Corporate secretarial, governance, secretarial audit, capital markets, banking, RBI & FEMA, restructuring, insolvency, due diligence, regulatory approvals and IPR services." path="/services" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "Services", path: "/services" }])]} />
       {/* Decorative background */}
       <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-primary/5 rounded-full blur-[140px] pointer-events-none" />
 
@@ -231,7 +232,7 @@ export default function Services() {
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-[60%] h-[60%] rounded-full bg-primary/15 blur-[90px]" />
               </div>
-              <GlobeOrbit className="relative z-10" />
+              <Deferred fallback={<div className="relative z-10 aspect-square w-full max-w-[420px] mx-auto" />}><Suspense fallback={null}><GlobeOrbit className="relative z-10" /></Suspense></Deferred>
               <p className="relative z-10 mt-4 text-center text-sm md:text-base text-muted-foreground max-w-sm">
                 <span className="font-semibold text-foreground">Wherever you do business, we're never far away.</span><br />
                 From our Hyderabad base to clients across India and beyond.

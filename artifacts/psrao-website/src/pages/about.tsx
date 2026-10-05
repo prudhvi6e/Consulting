@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, TrendingUp, Users, Target } from "lucide-react";
-import officeAbstract from "@/assets/images/office-abstract.jpg";
+import officeAbstract from "@/assets/images/office-abstract.webp";
 import { Counter } from "@/components/motion/Counter";
 import { Reveal, WordReveal } from "@/components/motion/Reveal";
 import { Parallax } from "@/components/motion/Parallax";
@@ -29,12 +29,11 @@ const staggerContainer = {
 };
 
 export default function About() {
-  useEffect(() => {
-    document.title = "About Us | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   return (
     <div className="w-full pt-20">
+      <Seo title="About Us" description="Two decades of corporate secretarial and compliance practice in Hyderabad. Meet the firm, its values and the 13+ service areas we cover." path="/about" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "About", path: "/about" }])]} />
       {/* Header */}
       <section className="py-20 md:py-32 bg-card border-b border-border relative overflow-hidden">
         <div className="absolute right-0 top-0 w-1/2 h-full opacity-20 pointer-events-none">

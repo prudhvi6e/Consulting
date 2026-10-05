@@ -45,6 +45,17 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (/[\\/](three|@react-three)[\\/]/.test(id)) return "three";
+          if (/[\\/](framer-motion|lenis)[\\/]/.test(id)) return "motion";
+          if (/[\\/](react|react-dom|wouter|@tanstack)[\\/]/.test(id)) return "react";
+          if (/[\\/]@fontsource[\\/]/.test(id)) return "fonts";
+        },
+      },
+    },
   },
   server: {
     port,

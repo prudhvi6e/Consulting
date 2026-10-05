@@ -1,3 +1,4 @@
+import { Seo } from "@/components/Seo";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useParams } from "wouter";
@@ -54,10 +55,7 @@ export default function Apply() {
   const job = jobs?.find((j) => j.id === id);
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    document.title = `${job ? `Apply: ${job.title}` : "Apply"} | PS Rao Corporate Solutions Pvt. Ltd.`;
-    window.scrollTo({ top: 0 });
-  }, [job]);
+  useEffect(() => { window.scrollTo({ top: 0 }); }, [job]);
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
@@ -72,6 +70,12 @@ export default function Apply() {
 
   return (
     <div className="w-full pt-20 bg-background relative overflow-hidden min-h-screen">
+      <Seo
+        title={j ? `Apply: ${j.title}` : "Send your profile"}
+        description={j ? `Apply for ${j.title} at PS Rao Corporate Solutions, ${j.location || "Hyderabad"}.` : "Send your profile to PS Rao Corporate Solutions for future openings."}
+        path={j ? `/careers/apply/${j.id}` : "/careers/apply"}
+        jsonLd={j ? [{ "@context": "https://schema.org", "@type": "JobPosting", title: j.title, description: j.description || `${j.title} at PS Rao Corporate Solutions`, datePosted: new Date().toISOString().slice(0, 10), ...(j.expiresOn ? { validThrough: j.expiresOn } : {}), employmentType: (j.type || "Full-time").toUpperCase().replace("-", "_"), hiringOrganization: { "@type": "Organization", name: "PS Rao Corporate Solutions Pvt. Ltd.", sameAs: "https://psrao.co.in" }, jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: j.location || "Hyderabad", addressRegion: "Telangana", addressCountry: "IN" } } }] : []}
+      />
       <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
 
       <section className="py-14 md:py-20 relative z-10 border-b border-border/50 bg-card/30 backdrop-blur-sm">

@@ -4,7 +4,7 @@ import { Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logoUrl from "@/assets/brand/psr-mark.png";
+import logoUrl from "@/assets/brand/psr-mark.webp";
 
 export function Navbar() {
   const [location] = useLocation();

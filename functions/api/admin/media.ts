@@ -31,7 +31,8 @@ export const onRequestPost: PagesFunction<CmsEnv> = async ({ request, env }) => 
   if (!ext) return bad(`Unsupported type ${file.type || "(unknown)"}`, 415);
   const folder = slugify(String(form?.get("folder") || "uploads")) || "uploads";
   const base = slugify(file.name.replace(/\.[^.]+$/, "")) || "file";
-  const key = `${folder}/${base}-${newId().slice(0, 8)}.${ext}`;
+  const explicit = String(form?.get("key") || "");
+  const key = explicit && /^[a-z0-9-]+\/[a-z0-9._-]+$/i.test(explicit) ? explicit : `${folder}/${base}-${newId().slice(0, 8)}.${ext}`;
   await env.MEDIA.put(key, file.stream(), { httpMetadata: { contentType: file.type, cacheControl: "public, max-age=31536000, immutable" } });
   return json({ key, url: `/api/media/${key}`, size: file.size, type: file.type }, 201);
 };

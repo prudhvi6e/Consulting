@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
@@ -8,8 +8,8 @@ import { Magnetic } from "@/components/motion/Magnetic";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { LampContainer } from "@/components/ui/lamp";
 import { getTeam, assetUrl } from "@/lib/cms";
-import psRaoImg from "@/assets/brand/p-s-rao.jpg";
-import saiImg from "@/assets/brand/p-sai-sampath.jpg";
+import psRaoImg from "@/assets/brand/p-s-rao.webp";
+import saiImg from "@/assets/brand/p-sai-sampath.webp";
 
 const teamMembers = [
   {
@@ -27,9 +27,7 @@ const teamMembers = [
 ];
 
 export default function Team() {
-  useEffect(() => {
-    document.title = "Our Team | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   // Content from the CMS; falls back to the bundled defaults if the CMS is unreachable.
   const { data: cmsTeam } = useQuery({ queryKey: ["cms", "team"], queryFn: getTeam });
@@ -39,6 +37,7 @@ export default function Team() {
 
   return (
     <div className="w-full">
+      <Seo title="Our Team" description="Leadership and the 25-member professional team behind PS Rao Corporate Solutions." path="/team" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "Team", path: "/team" }])]} />
       {/* Hero — lamp effect (light theme), centered in the viewport */}
       <LampContainer surfaceClassName="bg-background" contentClassName="-translate-y-32" className="min-h-[64vh] rounded-none pt-[150px]">
         <motion.h1

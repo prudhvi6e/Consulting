@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { Seo, breadcrumbs } from "@/components/Seo";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Building2, UserRound, ArrowLeft, CalendarCheck, Loader2, Video, Users } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -12,7 +13,9 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { WordReveal } from "@/components/motion/Reveal";
-import { ConnectionField } from "@/components/motion/ConnectionField";
+import { lazy, Suspense } from "react";
+import { Deferred } from "@/components/motion/Deferred";
+const ConnectionField = lazy(() => import("@/components/motion/ConnectionField").then((m) => ({ default: m.ConnectionField })));
 import { ConsultationCalendar } from "@/components/ConsultationCalendar";
 import { getSiteSettings } from "@/lib/cms";
 import {
@@ -53,9 +56,7 @@ export default function Contact() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [result, setResult] = useState<CreateMeetingResult | null>(null);
 
-  useEffect(() => {
-    document.title = "Contact Us | PS Rao Corporate Solutions Pvt. Ltd.";
-  }, []);
+  
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -109,6 +110,7 @@ export default function Contact() {
 
   return (
     <div className="w-full pt-20 bg-background relative overflow-hidden">
+      <Seo title="Contact Us" description="Book a free 30-minute consultation or reach PS Rao Corporate Solutions at Khairtabad, Hyderabad. +91 40 2335 2185 · info@psrao.co.in" path="/contact" jsonLd={[breadcrumbs([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])]} />
       {/* Decorative Glow */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sky-400/10 rounded-full blur-[120px] pointer-events-none" />
@@ -141,7 +143,7 @@ export default function Contact() {
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-[70%] h-[70%] rounded-full bg-primary/15 blur-[90px]" />
               </div>
-              <ConnectionField className="absolute inset-0 h-full w-full [mask-image:radial-gradient(circle_at_center,#000_60%,transparent_92%)]" />
+              <Deferred><Suspense fallback={null}><ConnectionField className="absolute inset-0 h-full w-full [mask-image:radial-gradient(circle_at_center,#000_60%,transparent_92%)]" /></Suspense></Deferred>
             </motion.div>
           </div>
         </div>

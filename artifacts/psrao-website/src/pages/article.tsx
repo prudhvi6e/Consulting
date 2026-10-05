@@ -1,3 +1,4 @@
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "wouter";
 import { motion, useReducedMotion } from "framer-motion";
@@ -29,12 +30,6 @@ export default function ArticleDetail() {
   const [summary, setSummary] = useState<string | null>(null);
   const [isSummaryLoading, setIsSummaryLoading] = useState(false);
   const [summaryError, setSummaryError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (raw) {
-      document.title = `${raw.title} | Insights | PS Rao Corporate Solutions Pvt. Ltd.`;
-    }
-  }, [raw]);
 
   useEffect(() => {
     // Cleanup audio URL on unmount
@@ -157,6 +152,16 @@ export default function ArticleDetail() {
 
   return (
     <div className="w-full pt-28 pb-24 bg-background relative overflow-hidden">
+      <Seo
+        title={`${article.title} | Insights`}
+        description={article.excerpt || `${article.title} — insight from PS Rao Corporate Solutions.`}
+        path={`/insights/${slug}`}
+        type="article"
+        jsonLd={[
+          { "@context": "https://schema.org", "@type": "Article", headline: article.title, description: article.excerpt, datePublished: article.date, author: { "@type": "Organization", name: article.author }, publisher: { "@id": "https://psrao.co.in/#organization" }, mainEntityOfPage: `https://psrao.co.in/insights/${slug}`, articleSection: article.category },
+          breadcrumbs([{ name: "Home", path: "/" }, { name: "Insights", path: "/insights" }, { name: article.title, path: `/insights/${slug}` }]),
+        ]}
+      />
       {/* Background glowing meshes */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-[120px] mix-blend-screen pointer-events-none" />
 

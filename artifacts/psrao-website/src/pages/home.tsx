@@ -1,3 +1,4 @@
+import { Seo, breadcrumbs } from "@/components/Seo";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "wouter";
@@ -5,34 +6,36 @@ import { ArrowRight, Shield, Zap, Target, ArrowUpRight, TrendingUp, Building2, B
 import useEmblaCarousel from "embla-carousel-react";
 import { useQuery } from "@tanstack/react-query";
 
-import officeAbstract from "@/assets/images/office-abstract.jpg";
+import officeAbstract from "@/assets/images/office-abstract.webp";
 
 // Capability Images
-import capRestructuring from "@/assets/images/capability-restructuring.jpg";
-import capMarkets from "@/assets/images/capability-markets.jpg";
-import capGovernance from "@/assets/images/capability-governance.jpg";
-import capDueDiligence from "@/assets/images/capability-duediligence.jpg";
+import capRestructuring from "@/assets/images/capability-restructuring.webp";
+import capMarkets from "@/assets/images/capability-markets.webp";
+import capGovernance from "@/assets/images/capability-governance.webp";
+import capDueDiligence from "@/assets/images/capability-duediligence.webp";
 
 // Industry Images
-import indFinance from "@/assets/images/industry-finance.jpg";
-import indTech from "@/assets/images/industry-tech.jpg";
-import indHealthcare from "@/assets/images/industry-healthcare.jpg";
-import indManufacturing from "@/assets/images/industry-manufacturing.jpg";
-import indRealEstate from "@/assets/images/industry-realestate.jpg";
-import indRetail from "@/assets/images/industry-retail.jpg";
-import indEnergy from "@/assets/images/industry-energy.jpg";
-import indStartup from "@/assets/images/industry-startup.jpg";
-import indAgri from "@/assets/images/james-baltz-jAt6cN6zl8M-unsplash.jpg";
-import indDefence from "@/assets/images/Defence.jpg";
-import indEducation from "@/assets/images/Education.jpg";
-import indInsurance from "@/assets/images/Insurance.jpg";
-import indEntertainment from "@/assets/images/Entertainment.jpg";
-import indPharma from "@/assets/images/Pharma.jpg";
-import indTelecom from "@/assets/images/Telecom.jpg";
-import indInfra from "@/assets/images/Trans & infra.jpg";
+import indFinance from "@/assets/images/industry-finance.webp";
+import indTech from "@/assets/images/industry-tech.webp";
+import indHealthcare from "@/assets/images/industry-healthcare.webp";
+import indManufacturing from "@/assets/images/industry-manufacturing.webp";
+import indRealEstate from "@/assets/images/industry-realestate.webp";
+import indRetail from "@/assets/images/industry-retail.webp";
+import indEnergy from "@/assets/images/industry-energy.webp";
+import indStartup from "@/assets/images/industry-startup.webp";
+import indAgri from "@/assets/images/james-baltz-jAt6cN6zl8M-unsplash.webp";
+import indDefence from "@/assets/images/Defence.webp";
+import indEducation from "@/assets/images/Education.webp";
+import indInsurance from "@/assets/images/Insurance.webp";
+import indEntertainment from "@/assets/images/Entertainment.webp";
+import indPharma from "@/assets/images/Pharma.webp";
+import indTelecom from "@/assets/images/Telecom.webp";
+import indInfra from "@/assets/images/Trans & infra.webp";
 
 import { cn } from "@/lib/utils";
-import { WebGLHero } from "@/components/motion/WebGLHero";
+import { lazy, Suspense } from "react";
+import { Deferred } from "@/components/motion/Deferred";
+const WebGLHero = lazy(() => import("@/components/motion/WebGLHero").then((m) => ({ default: m.WebGLHero })));
 import { Counter } from "@/components/motion/Counter";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { TiltCard } from "@/components/motion/TiltCard";
@@ -156,16 +159,24 @@ const STATS = [
   { to: 30, suffix: "+", label: "Compliance Reports" },
 ];
 
+/** srcset/sizes for CMS banners that have a pre-generated 800px variant (see cms/optimize-media.mjs). */
+const responsive = (src: string) =>
+  /^\/api\/media\/(hero|capabilities)\/.+\.webp$/.test(src)
+    ? { srcSet: `${src.replace(/\.webp$/, "-w800.webp")} 800w, ${src} 1600w`, sizes: "100vw" }
+    : {};
+
 export default function Home() {
   const prefersReducedMotion = useReducedMotion();
   
-  useEffect(() => {
-    document.title = "PS Rao Corporate Solutions Pvt. Ltd. | Corporate Advisors & Company Secretaries";
-  }, []);
+  
 
   // Hero Carousel Setup
   const [heroRef, heroApi] = useEmblaCarousel({ loop: true });
   const [heroSelected, setHeroSelected] = useState(0);
+  // Slides 2+ are in the viewport (opacity 0) so loading="lazy" doesn't defer them; hold their
+  // src until the first banner has painted so they never compete with the LCP image.
+  const [restReady, setRestReady] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setRestReady(true), 1200); return () => clearTimeout(t); }, []);
 
   // CMS content; each falls back to the bundled defaults if the CMS is unreachable.
   const { data: cmsHero } = useQuery({ queryKey: ["cms", "hero"], queryFn: getHeroSlides });
@@ -221,6 +232,7 @@ export default function Home() {
 
   return (
     <div className="w-full">
+      <Seo title="PS Rao Corporate Solutions Pvt. Ltd. | Company Secretaries & Corporate Advisors, Hyderabad" description="Hyderabad-based firm of Company Secretaries: corporate governance, secretarial audit, restructuring, FEMA/RBI, capital markets and legal due diligence advisory for listed and unlisted companies." path="/" />
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-20 pb-20 overflow-hidden bg-background">
         <div className="absolute inset-0 z-0">
@@ -228,9 +240,14 @@ export default function Home() {
           {heroSlides.map((slide, i) => (
             <img
               key={i}
-              src={slide.image}
+              src={i === 0 || restReady ? slide.image : undefined}
+              {...(i === 0 || restReady ? responsive(slide.image) : {})}
               alt=""
               aria-hidden
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding={i === 0 ? "sync" : "async"}
+              // first banner is the LCP element on the home page
+              {...(i === 0 ? { fetchPriority: "high" as const } : {})}
               className={cn(
                 "absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-out",
                 heroSelected === i ? "opacity-100" : "opacity-0"
@@ -238,14 +255,16 @@ export default function Home() {
             />
           ))}
           {/* Floating water effect — shown on the first slide only; the rest are clean photo banners */}
-          <WebGLHero
-            className={cn(
-              "absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-700",
-              heroSlides[heroSelected]?.showWater ? "opacity-100" : "opacity-0"
-            )}
-          />
+          <Deferred><Suspense fallback={null}>
+            <WebGLHero
+              className={cn(
+                "absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-700",
+                heroSlides[heroSelected]?.showWater ? "opacity-100" : "opacity-0"
+              )}
+            />
+          </Suspense></Deferred>
           {/* Legibility: white sits mainly behind the left-side text; the photo stays vivid on the right */}
-          <div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-background/55 to-transparent" />
+          <div className="absolute inset-0 z-10 bg-gradient-to-r from-background via-background/80 to-background/40 md:via-background/55 md:to-transparent" />
           <div className="absolute inset-0 z-10 bg-gradient-to-t from-background/85 to-transparent to-[40%]" />
 
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] mix-blend-screen animate-pulse" />
@@ -254,7 +273,7 @@ export default function Home() {
 
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={false}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
           >
@@ -360,7 +379,9 @@ export default function Home() {
                     src={logo}
                     alt=""
                     aria-hidden="true"
-                    loading="eager"
+                    // below the fold on every viewport; eager loading made 74 requests compete
+                    // with the hero image for bandwidth before LCP
+                    loading="lazy"
                     decoding="async"
                     draggable={false}
                     className="h-10 md:h-12 w-auto object-contain opacity-50 dark:opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300"
@@ -560,7 +581,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-16 md:py-24 relative overflow-hidden bg-background">
         <Parallax speed={0.3} className="absolute inset-0 opacity-10">
-           <img src={officeAbstract} alt="" aria-hidden className="w-full h-full object-cover scale-125 mix-blend-luminosity" />
+           <img src={officeAbstract} alt="" aria-hidden loading="lazy" decoding="async" className="w-full h-full object-cover scale-125 mix-blend-luminosity" />
         </Parallax>
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <Reveal className="bg-primary/5 border border-primary/20 rounded-3xl p-10 md:p-20 text-center max-w-4xl mx-auto backdrop-blur-sm">
