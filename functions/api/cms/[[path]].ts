@@ -24,5 +24,9 @@ export const onRequestGet: PagesFunction<CmsEnv> = async ({ env, params }) => {
     // public only sees published articles
     return json((data as { status?: string }[]).filter((a) => a.status !== "draft"), 200, CACHE);
   }
+  if ((name === "case_studies" || name === "testimonials") && Array.isArray(data)) {
+    // drafts (and unapproved client quotes) never leave the server
+    return json((data as { status?: string }[]).filter((a) => a.status !== "draft"), 200, CACHE);
+  }
   return json(data, 200, CACHE);
 };
