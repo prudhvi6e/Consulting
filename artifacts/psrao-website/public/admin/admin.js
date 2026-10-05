@@ -155,6 +155,38 @@ const SCHEMAS = {
       { key: "services", label: "Services", type: "services" },
     ],
   },
+  case_studies: {
+    label: "Case studies", group: "Pages", title: (x) => x.title, sub: (x) => `${x.client || ""}${x.sector ? " · " + x.sector : ""}`, chip: (x) => (x.status === "draft" ? "draft" : null), thumb: "image", folder: "case-studies",
+    help: "Short, anonymised engagement stories shown on the Home and Services pages. Use ✦ Draft with AI: paste the facts, the AI writes the story — you check it.",
+    fields: [
+      { key: "title", label: "Title (outcome-led)", type: "text" },
+      { key: "status", label: "Status", type: "select", options: [["published", "Published"], ["draft", "Draft (hidden)"]] },
+      { key: "client", label: "Client (anonymised)", type: "text", hint: "e.g. Listed mid-cap pharma company" },
+      { key: "sector", label: "Sector", type: "select", options: ["Pharma", "FMCG", "Technology", "Manufacturing", "Financial Services", "Real Estate", "Infrastructure", "Startups", "Healthcare", "Retail", "Other"].map((v) => [v, v]) },
+      { key: "metric", label: "Headline number", type: "text", hint: "e.g. 94 days, ₹120 Cr, 100%" },
+      { key: "metricLabel", label: "Number caption", type: "text", hint: "e.g. from board approval to NCLT order" },
+      { key: "challenge", label: "The challenge", type: "textarea" },
+      { key: "approach", label: "What we did", type: "textarea" },
+      { key: "outcome", label: "The outcome", type: "textarea" },
+      { key: "services", label: "Services involved", type: "lines" },
+      { key: "image", label: "Image (optional)", type: "image" },
+    ],
+    defaults: { status: "published", services: [] },
+  },
+  testimonials: {
+    label: "Testimonials", group: "Pages", title: (x) => x.name, sub: (x) => `${x.role || ""}${x.company ? ", " + x.company : ""}`, chip: (x) => (x.status === "draft" ? "draft" : null), thumb: "image", folder: "testimonials",
+    help: "Client quotes shown on the Home page. Keep only testimonials the client has approved for publication.",
+    fields: [
+      { key: "name", label: "Name", type: "text" },
+      { key: "role", label: "Designation", type: "text" },
+      { key: "company", label: "Company", type: "text" },
+      { key: "quote", label: "Quote", type: "textarea" },
+      { key: "status", label: "Status", type: "select", options: [["published", "Published"], ["draft", "Draft (hidden)"]] },
+      { key: "approved", label: "Client approved publication", type: "bool" },
+      { key: "image", label: "Photo or company logo (optional)", type: "image" },
+    ],
+    defaults: { status: "published", approved: false },
+  },
   team: {
     label: "Team", group: "Pages", title: (x) => x.name, sub: (x) => x.role, thumb: "image", folder: "team",
     fields: [
@@ -521,6 +553,39 @@ const GENERATORS = {
     } }, "Write draft");
     const bg = modal("Write an article with AI", h("div", { style: "display:grid;gap:14px" }, field("Topic", topic), field("Key points (optional)", points), h("div", { class: "row" }, field("Length", length), field("Tone", tone)), h("div", { class: "hint" }, "The draft is saved as a Draft (hidden from the site). Review facts before publishing — the AI can be wrong about law."), go));
     topic.focus();
+  },
+  async case_studies(main, name) {
+    const facts = h("textarea", { rows: 9, placeholder: "Plain facts, in any order — e.g.\nListed pharma company, Hyderabad. Needed to merge two subsidiaries before FY end. Fast-track merger under s.233. We ran the scheme, creditor/shareholder approvals, RD filing. Done in 94 days. Saved them a full NCLT round." });
+    const go = h("button", { class: "btn primary", onclick: async () => {
+      if (!facts.value.trim()) return toast("Enter the facts of the engagement", "err");
+      go.disabled = true; go.textContent = "Writing… (15–30 s)";
+      try {
+        const c = await api.ai("case_study", "", { facts: facts.value });
+        const list = await load(name);
+        list.unshift({ id: uid(), status: "draft", title: c.title || "", client: c.client || "", sector: ["Pharma", "FMCG", "Technology", "Manufacturing", "Financial Services", "Real Estate", "Infrastructure", "Startups", "Healthcare", "Retail", "Other"].includes(c.sector) ? c.sector : "Other", challenge: c.challenge || "", approach: c.approach || "", outcome: c.outcome || "", metric: c.metric || "", metricLabel: c.metricLabel || "", services: Array.isArray(c.services) ? c.services : [], image: "" });
+        markDirty(name); bg.remove(); toast("Case study drafted — check every fact, then set Status to Published."); render();
+      } catch (ex) { toast(ex.message, "err"); go.disabled = false; go.textContent = "Draft case study"; }
+    } }, "Draft case study");
+    const bg = modal("Draft a case study with AI", h("div", { style: "display:grid;gap:14px" }, field("Facts of the engagement", facts), h("div", { class: "hint" }, "The client is anonymised automatically. The AI never invents numbers — if you give none, the headline number stays empty."), go));
+    facts.focus();
+  },
+  async testimonials(main, name) {
+    const nm = h("input", { type: "text", placeholder: "Client's name" });
+    const role = h("input", { type: "text", placeholder: "e.g. CFO" });
+    const co = h("input", { type: "text", placeholder: "Company" });
+    const notes = h("textarea", { rows: 6, placeholder: "What the client said — a WhatsApp message, an email line, or your own notes of the call" });
+    const go = h("button", { class: "btn primary", onclick: async () => {
+      if (!notes.value.trim()) return toast("Enter what the client said", "err");
+      go.disabled = true; go.textContent = "Polishing…";
+      try {
+        const t = await api.ai("testimonial", "", { notes: notes.value });
+        const list = await load(name);
+        list.unshift({ id: uid(), status: "draft", approved: false, name: nm.value, role: role.value, company: co.value, quote: t.quote || notes.value, image: "" });
+        markDirty(name); bg.remove(); toast("Testimonial drafted — send it to the client for approval before publishing."); render();
+      } catch (ex) { toast(ex.message, "err"); go.disabled = false; go.textContent = "Polish quote"; }
+    } }, "Polish quote");
+    const bg = modal("Polish a testimonial with AI", h("div", { style: "display:grid;gap:14px" }, h("div", { class: "row" }, field("Name", nm), field("Designation", role)), field("Company", co), field("Client's words / notes", notes), go));
+    nm.focus();
   },
   async jobs(main, name) {
     const title = h("input", { type: "text", placeholder: "e.g. Associate – Securities Law" });

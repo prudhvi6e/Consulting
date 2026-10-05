@@ -42,6 +42,7 @@ import { TiltCard } from "@/components/motion/TiltCard";
 import { Reveal, WordReveal } from "@/components/motion/Reveal";
 import { Parallax } from "@/components/motion/Parallax";
 import { getHeroSlides, getCapabilities, getIndustries, getStats, getClientLogos, assetUrl } from "@/lib/cms";
+import { CaseStudies, Testimonials } from "@/components/SocialProof";
 import { getIcon } from "@/lib/icons";
 import { EventsDueDates } from "@/components/EventsDueDates";
 
@@ -577,6 +578,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CaseStudies />
+      <Testimonials />
 
       {/* CTA Section */}
       <section className="py-16 md:py-24 relative overflow-hidden bg-background">

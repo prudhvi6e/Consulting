@@ -25,6 +25,8 @@ type Msg = { role: "system" | "user"; content: string };
 const S = {
   str: { type: "string" }, strArr: { type: "array", items: { type: "string" } },
   article: { type: "object", required: ["title", "slug", "category", "excerpt", "readTime", "content"], properties: { title: { type: "string" }, slug: { type: "string" }, category: { type: "string" }, excerpt: { type: "string" }, readTime: { type: "string" }, content: { type: "array", maxItems: 6, items: { type: "object", required: ["heading", "paragraphs"], properties: { heading: { type: "string" }, paragraphs: { type: "array", maxItems: 4, items: { type: "string" } } } } } } },
+  caseStudy: { type: "object", required: ["title", "client", "sector", "challenge", "approach", "outcome", "metric", "metricLabel", "services"], properties: { title: { type: "string" }, client: { type: "string" }, sector: { type: "string" }, challenge: { type: "string" }, approach: { type: "string" }, outcome: { type: "string" }, metric: { type: "string" }, metricLabel: { type: "string" }, services: { type: "array", items: { type: "string" } } } },
+  testimonial: { type: "object", required: ["quote"], properties: { quote: { type: "string" } } },
   jobLists: { type: "object", required: ["responsibilities", "requirements"], properties: { responsibilities: { type: "array", items: { type: "string" } }, requirements: { type: "array", items: { type: "string" } } } },
   events: { type: "object", required: ["events"], properties: { events: { type: "array", maxItems: 14, items: { type: "object", required: ["title", "type", "date", "note"], properties: { title: { type: "string" }, type: { type: "string", enum: ["duedate", "event"] }, date: { type: "string" }, note: { type: "string" } } } } } },
   candidate: { type: "object", required: ["summary", "strengths", "gaps", "fit", "score", "questions"], properties: { summary: { type: "string" }, strengths: { type: "array", items: { type: "string" } }, gaps: { type: "array", items: { type: "string" } }, fit: { type: "string", enum: ["strong", "possible", "weak"] }, score: { type: "number" }, questions: { type: "array", items: { type: "string" } } } },
@@ -102,6 +104,24 @@ const handle: PagesFunction<Env> = async ({ request, env }) => {
     ]);
     const parsed = parseJson(lists) as { responsibilities?: string[]; requirements?: string[] };
     return json({ description: description.trim(), responsibilities: parsed.responsibilities || [], requirements: parsed.requirements || [] });
+  }
+  if (task === "case_study") {
+    const facts = String(ctx.facts || input);
+    if (!facts.trim()) return bad("Give the facts of the engagement");
+    const out = await complete(env, [
+      { role: "system", content: `${FIRM}\n\nTurn the facts of a client engagement into a short, anonymised case study for the firm's website. Respond ONLY with minified JSON matching exactly:\n{"title":string(max 10 words, outcome-led, e.g. "Fast-track merger closed in 94 days"),"client":string(anonymised client descriptor, e.g. "Listed mid-cap pharma company"),"sector":string(exactly one of: Pharma, FMCG, Technology, Manufacturing, Financial Services, Real Estate, Infrastructure, Startups, Healthcare, Retail, Other),"challenge":string(2-3 sentences, 50-80 words),"approach":string(3-4 sentences, 70-110 words, what PS Rao did),"outcome":string(2-3 sentences, 40-70 words),"metric":string(the single headline number, e.g. "94 days" or "₹120 Cr"),"metricLabel":string(max 6 words, e.g. "from board approval to NCLT order"),"services":[string x 2-4](service names used)}\nRules: never name the client or any individual; never invent numbers — if the facts give no figure, set metric to "" and metricLabel to ""; plain professional English; no superlatives.` },
+      { role: "user", content: `Facts from the partner:\n${facts}` },
+    ], 1500, S.caseStudy);
+    return json(parseJson(out));
+  }
+  if (task === "testimonial") {
+    const notes = String(ctx.notes || input);
+    if (!notes.trim()) return bad("Give the client's words or notes");
+    const out = await complete(env, [
+      { role: "system", content: `${FIRM}\n\nA client has given feedback informally (notes, a WhatsApp message, or a few bullet points). Polish it into a website testimonial in the client's own voice: first person, 2-3 sentences, 35-60 words, specific about what the firm did and why it mattered. Keep every fact; add none. Respond ONLY with minified JSON: {"quote":string}.` },
+      { role: "user", content: notes },
+    ], 300, S.testimonial);
+    return json(parseJson(out));
   }
   if (task === "events") {
     const month = String(ctx.month || input); // YYYY-MM

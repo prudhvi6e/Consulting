@@ -91,6 +91,32 @@ export type TeamMember = {
   sort: number | null;
 };
 
+export type CaseStudy = {
+  id: string;
+  status?: string;
+  title: string;
+  client: string;
+  sector: string;
+  challenge: string;
+  approach: string;
+  outcome: string;
+  metric: string;
+  metricLabel: string;
+  services: string[];
+  image: string | null;
+};
+
+export type Testimonial = {
+  id: string;
+  status?: string;
+  approved?: boolean;
+  name: string;
+  role: string;
+  company: string;
+  quote: string;
+  image: string | null;
+};
+
 export type Stat = {
   id: string;
   value: number;
@@ -123,6 +149,14 @@ export const getCapabilities = () => list<Capability>("capabilities");
 export const getIndustries = () => list<Industry>("industries");
 export const getServiceGroups = () => list<ServiceGroup>("service_groups");
 export const getTeam = () => list<TeamMember>("team");
+export async function getCaseStudies(): Promise<CaseStudy[]> {
+  const rows = await list<CaseStudy>("case_studies");
+  return rows.filter((c) => c.status !== "draft").map((c) => ({ ...c, image: c.image ? assetUrl(c.image) : null, services: Array.isArray(c.services) ? c.services : [] }));
+}
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const rows = await list<Testimonial>("testimonials");
+  return rows.filter((t) => t.status !== "draft" && t.quote).map((t) => ({ ...t, image: t.image ? assetUrl(t.image) : null }));
+}
 export const getStats = () => list<Stat>("stats");
 export const getClientLogos = () => list<ClientLogo>("client_logos");
 export const getArticles = () => list<Article>("articles");

@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 import { Deferred } from "@/components/motion/Deferred";
 const GlobeOrbit = lazy(() => import("@/components/motion/GlobeOrbit").then((m) => ({ default: m.GlobeOrbit })));
 import { getServiceGroups } from "@/lib/cms";
+import { CaseStudies } from "@/components/SocialProof";
 import { getIcon } from "@/lib/icons";
 import { Building2, Briefcase, FileCheck, Network, TrendingUp, Gavel, BookOpen, Globe2, Landmark, Stamp, Lightbulb, ArrowRight, type LucideIcon } from "lucide-react";
 
@@ -273,6 +274,8 @@ export default function Services() {
       </section>
 
       {/* Closing CTA */}
+      <CaseStudies heading="How we have helped" className="relative z-10" />
+
       <section className="py-24 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
           <div className="bg-primary/5 border border-primary/20 rounded-3xl p-10 md:p-16 text-center max-w-4xl mx-auto backdrop-blur-sm">

@@ -34,6 +34,8 @@ export const COLLECTIONS = [
   "events",
   "jobs",
   "applications",
+  "case_studies",
+  "testimonials",
 ] as const;
 export type Collection = (typeof COLLECTIONS)[number];
 export const isCollection = (s: string): s is Collection => (COLLECTIONS as readonly string[]).includes(s);
