@@ -47,7 +47,7 @@
 
 <h2>1. Where the money goes today vs. after</h2>
 <table>
-  <tr><th>Item</th><th>Today (BigRock)</th><th class="n">₹ / year</th><th>After migration</th><th class="n">₹ / year</th></tr>
+  <tr><th style="width:17%">Item</th><th style="width:30%">Today (BigRock)</th><th class="n" style="width:12%">₹ / year</th><th style="width:29%">After migration</th><th class="n" style="width:12%">₹ / year</th></tr>
   <tr><td>Website hosting</td><td>VPS Linux KVM (shared with email)</td><td class="n cost">≈10,000–15,000</td><td>Cloudflare Pages + Functions + KV + R2</td><td class="n zero">0</td></tr>
   <tr><td>Admin panel / CMS</td><td>Custom panel on the VPS</td><td class="n">included above</td><td>Built-in <b>/admin</b> on Cloudflare (KV + R2)</td><td class="n zero">0</td></tr>
   <tr><td>Chatbot / AI in admin</td><td>—</td><td class="n">—</td><td>Cloudflare Workers AI (free tier, 10k neurons/day)</td><td class="n zero">0</td></tr>
@@ -139,7 +139,7 @@
 <h2>4. Migration plan, costed</h2>
 <p>Order matters: renew the domain first, move email second, move DNS third, cancel the VPS last. Nothing on the live site is interrupted at any step.</p>
 <table>
-  <tr><th>#</th><th>Activity</th><th>Who</th><th>When</th><th>Effort</th><th class="n">One-time ₹</th><th class="n">Recurring ₹/yr</th></tr>
+  <tr><th style="width:4%">#</th><th style="width:46%">Activity</th><th style="width:9%">Who</th><th style="width:9%">When</th><th style="width:11%">Effort</th><th class="n" style="width:8%">One-time ₹</th><th class="n" style="width:13%">Recurring ₹/yr</th></tr>
   <tr><td>M0</td><td><b>Renew psraoassociates.com</b> at BigRock (auto-renew is OFF; wallet ₹35.82 — pay by card). Confirm registrar and expiry of psrao.co.in.</td><td>KV Sir</td><td><b>Before 17 Oct</b></td><td>10 min</td><td class="n">0</td><td class="n cost">≈1,000–1,300</td></tr>
   <tr><td>M1</td><td><b>Choose the email option</b> (§2) and confirm the 5 mailbox addresses. Tell us where info@/career@ are hosted today (we believe cPanel on the VPS).</td><td>KV Sir</td><td>This week</td><td>15 min</td><td class="n">0</td><td class="n cost">0 – 8,220</td></tr>
   <tr><td>M2</td><td><b>Create mailboxes</b> on Zoho/Google; <b>migrate old mail</b> from cPanel with the provider's IMAP migration tool; set up phones/Outlook. Old and new run in parallel.</td><td>Us + each staff member</td><td>Week 1</td><td>2–3 h + 10 min per person</td><td class="n zero">0</td><td class="n">—</td></tr>
@@ -147,8 +147,8 @@
   <tr><td>M4</td><td><b>Redirect psraoassociates.com → psrao.co.in</b> (301, via Cloudflare) so old links and Google results keep working. Wire application-alert emails to career@.</td><td>Us</td><td>Week 2</td><td>30 min</td><td class="n zero">0</td><td class="n zero">0</td></tr>
   <tr><td>M5</td><td><b>Verify</b>: send/receive from every mailbox, test from Gmail/Outlook, confirm no mail lands in spam (SPF/DKIM pass), site resolves on psrao.co.in with SSL.</td><td>Us + KV Sir</td><td>Week 2</td><td>1 h</td><td class="n zero">0</td><td class="n zero">0</td></tr>
   <tr><td>M6</td><td><b>Two-week overlap</b>, then export anything still on the VPS (cPanel full backup, old DB) to a drive as an archive.</td><td>Us</td><td>Weeks 2–4</td><td>1 h</td><td class="n zero">0</td><td class="n zero">0</td></tr>
-  <tr><td>M7</td><td><b>Let the VPS lapse</b> on 6 Nov 2026 (do not renew). Also ignore the SiteLock→cWatch notice — not needed on Cloudflare.</td><td>KV Sir</td><td><b>6 Nov</b></td><td>0</td><td class="n zero">0</td><td class="n zero">−10,000 to −15,000 saved</td></tr>
-  <tr><th colspan="5">Total migration cost</th><th class="n zero">₹0</th><th class="n cost">₹1,700 – 10,400 / yr (vs ≈12,000–17,000 today)</th></tr>
+  <tr><td>M7</td><td><b>Let the VPS lapse</b> on 6 Nov 2026 (do not renew). Also ignore the SiteLock→cWatch notice — not needed on Cloudflare.</td><td>KV Sir</td><td><b>6 Nov</b></td><td>0</td><td class="n zero">0</td><td class="n zero" style="white-space:normal">saves 10,000–15,000</td></tr>
+  <tr><th colspan="5">Total migration cost</th><th class="n zero">₹0</th><th class="n cost" style="white-space:normal">₹1,700 – 10,400 / yr<br><span class="small">(vs ≈12,000–17,000 today)</span></th></tr>
 </table>
 
 <div class="box amber">
