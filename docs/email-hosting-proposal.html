@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>PS Rao — Email & Hosting: options, costs and migration plan</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+  * { box-sizing: border-box; }
+  body { font: 10.5pt/1.5 Inter, "Segoe UI", Arial, sans-serif; color: #0B1220; margin: 0; }
+  h1 { font-size: 22pt; margin: 0 0 4px; letter-spacing: -0.3px; }
+  h2 { font-size: 14.5pt; color: #2E6BFF; margin: 26px 0 8px; padding-top: 6px; border-top: 2px solid #2E6BFF; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  .sub { color: #475569; font-size: 10pt; }
+  .meta { color: #64748b; font-size: 9pt; margin-bottom: 14px; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0 12px; font-size: 9.6pt; }
+  tr { page-break-inside: avoid; }
+  th, td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; text-align: left; }
+  th { background: #eef3ff; font-weight: 600; }
+  td.n, th.n { text-align: right; white-space: nowrap; }
+  .cost { font-weight: 700; color: #0B1220; white-space: nowrap; }
+  .zero { color: #15803d; font-weight: 700; }
+  .warn { color: #b45309; font-weight: 600; }
+  .bad { color: #b91c1c; }
+  .box { border: 1px solid #cbd5e1; border-left: 4px solid #2E6BFF; background: #f8fafc; padding: 9px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .box.green { border-left-color: #15803d; background: #f0fdf4; }
+  .box.amber { border-left-color: #b45309; background: #fffbeb; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 10px 0; page-break-inside: avoid; }
+  .card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; page-break-inside: avoid; }
+  .card h4 { margin: 0 0 4px; font-size: 10.5pt; }
+  .card .price { font-size: 15pt; font-weight: 700; margin: 2px 0 6px; }
+  .card ul { margin: 4px 0 0 16px; padding: 0; }
+  .card li { margin: 2px 0; }
+  ul { margin: 4px 0 8px 18px; padding: 0; } li { margin: 2px 0; }
+  .small { font-size: 9pt; color: #475569; }
+  .pb { page-break-before: always; }
+  .tag { display: inline-block; margin-left: 0; font-size: 8.5pt; padding: 1px 7px; border-radius: 999px; background: #eef3ff; color: #2E6BFF; font-weight: 600; margin-left: 4px; }
+  .tag.g { background: #f0fdf4; color: #15803d; }
+  .tag.a { background: #fffbeb; color: #b45309; }
+  .foot { font-size: 8.5pt; color: #64748b; margin-top: 18px; border-top: 1px solid #e2e8f0; padding-top: 6px; }
+</style></head><body>
+
+<h1>Email &amp; Hosting for PS Rao</h1>
+<div class="sub">Options, costs and the migration plan off BigRock — October 2026</div>
+<div class="meta">Prepared for PS Rao Corporate Solutions Pvt. Ltd. · All prices in ₹, excluding 18% GST unless stated · Costing is shown for <b>5 mailboxes</b> (info@, career@ + 3 staff); multiply per user for more.</div>
+
+<div class="box">
+  <b>Summary.</b> The new website is already live on Cloudflare Pages at <b>psrao-consulting.pages.dev</b> at <span class="zero">₹0/month</span>. The only thing the BigRock VPS still does is host email. Moving email to a proper mail provider lets the VPS (expires <b>6 Nov 2026</b>) lapse, taking the recurring hosting bill from <b>≈₹10,000–15,000/year to ₹0</b> for the website, and email to between <span class="zero">₹0</span> and <b>₹8,200/year</b> depending on the option chosen below.
+</div>
+
+<h2>1. Where the money goes today vs. after</h2>
+<table>
+  <tr><th>Item</th><th>Today (BigRock)</th><th class="n">₹ / year</th><th>After migration</th><th class="n">₹ / year</th></tr>
+  <tr><td>Website hosting</td><td>VPS Linux KVM (shared with email)</td><td class="n cost">≈10,000–15,000</td><td>Cloudflare Pages + Functions + KV + R2</td><td class="n zero">0</td></tr>
+  <tr><td>Admin panel / CMS</td><td>Custom panel on the VPS</td><td class="n">included above</td><td>Built-in <b>/admin</b> on Cloudflare (KV + R2)</td><td class="n zero">0</td></tr>
+  <tr><td>Chatbot / AI in admin</td><td>—</td><td class="n">—</td><td>Cloudflare Workers AI (free tier, 10k neurons/day)</td><td class="n zero">0</td></tr>
+  <tr><td>Email (5 mailboxes)</td><td>cPanel webmail on the VPS</td><td class="n">included above</td><td>Option A / B / C — see §2</td><td class="n cost">0 – 8,200</td></tr>
+  <tr><td>Domain psraoassociates.com</td><td>BigRock — renew by <b>17 Oct 2026</b> (auto-renew OFF)</td><td class="n cost">≈1,000–1,300</td><td>Keep at BigRock (or transfer to Cloudflare Registrar at cost price)</td><td class="n cost">≈1,000–1,300</td></tr>
+  <tr><td>Domain psrao.co.in</td><td>Current registrar</td><td class="n cost">≈700–900</td><td>Same; DNS moves to Cloudflare (free)</td><td class="n cost">≈700–900</td></tr>
+  <tr><td>SSL certificate</td><td>Let's Encrypt / cPanel</td><td class="n">0</td><td>Cloudflare (automatic)</td><td class="n zero">0</td></tr>
+  <tr><th colspan="2">Total recurring</th><th class="n cost">≈12,000–17,000</th><th></th><th class="n cost">≈1,700 – 10,400</th></tr>
+</table>
+<p class="small">BigRock VPS figure is the typical renewal band for the Linux KVM plan; check the exact renewal quote in the BigRock panel. Wallet balance today: ₹35.82.</p>
+
+<h2>2. Email: Open-source vs Zoho Mail vs Google Workspace</h2>
+<p>Three realistic ways to run <b>@psrao.co.in</b> mailboxes once the VPS is gone. Staff are comfortable with Gmail, so each option is also rated on "feels like Gmail".</p>
+
+<div class="grid">
+  <div class="card">
+    <h4>A · Open-source</h4><span class="tag g">₹0 – 12,000/yr</span>
+    <div class="price">₹0 <span class="small">routing</span> · ₹8–12k <span class="small">self-hosted</span></div>
+    <ul>
+      <li><b>A1 Cloudflare Email Routing + Gmail "Send mail as"</b> — forward info@/career@ to existing Gmail accounts and reply from the @psrao.co.in address. ₹0.</li>
+      <li><b>A2 Self-hosted (Mailcow / Mail-in-a-Box / Zimbra)</b> — your own mail server on a VPS. Server ₹8–12k/yr <b>plus</b> someone to maintain it.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>B · Zoho Mail</h4><span class="tag">₹0 – 4,500/yr</span>
+    <div class="price">₹0 · ₹59/user/mo</div>
+    <ul>
+      <li><b>Free</b>: 5 users, 5 GB each, web + mobile app only (no IMAP/Outlook), one domain.</li>
+      <li><b>Mail Lite</b> ₹59/user/mo (5 GB) or ₹75 (10 GB): IMAP, Outlook, multiple domains. 5 users = <b>₹3,540/yr</b>.</li>
+      <li><b>Mail Premium</b> ₹199/user/mo: 50 GB, archival, e-discovery.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>C · Google Workspace</h4><span class="tag a">₹8,200/yr</span>
+    <div class="price">₹137/user/mo</div>
+    <ul>
+      <li><b>Business Starter</b> (India, annual plan): 30 GB per user, Gmail, Meet (100), Drive, Docs/Sheets, shared calendars.</li>
+      <li>5 users = <b>₹8,220/yr</b> + GST (≈₹9,700). Monthly-flexible plan costs more; promos of ~₹350/mo often apply to the flexible plan.</li>
+      <li><b>Starter+</b> / Standard (2 TB, recording) ₹736/user/mo.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>Side-by-side</h3>
+<table>
+  <tr><th style="width:17%"></th><th style="width:19%">A1 · Routing + Gmail send-as</th><th>A2 · Self-hosted open-source</th><th>B · Zoho Mail Lite</th><th>C · Google Workspace Starter</th></tr>
+  <tr><td><b>Cost / year (5 users)</b></td><td class="zero">₹0</td><td class="cost">₹8,000–12,000 + admin time</td><td class="cost">₹3,540 (₹4,500 for 10 GB)</td><td class="cost">₹8,220 (+GST ≈ ₹9,700)</td></tr>
+  <tr><td>Storage per user</td><td>Your personal Gmail's 15 GB</td><td>Whatever the VPS disk allows</td><td>5 GB / 10 GB</td><td>30 GB (pooled)</td></tr>
+  <tr><td>Feels like Gmail</td><td>Yes — it <i>is</i> Gmail</td><td>No (Roundcube/SOGo webmail)</td><td>Similar; clean, fast</td><td>Yes</td></tr>
+  <tr><td>Outlook / phone app (IMAP)</td><td>Via Gmail</td><td>Yes</td><td>Yes (not on the Free plan)</td><td>Yes</td></tr>
+  <tr><td>Deliverability (mail not landing in spam)</td><td>Gmail's reputation</td><td class="bad">Your IP's reputation — the #1 problem with self-hosting</td><td>Excellent</td><td>Excellent</td></tr>
+  <tr><td>Calendar, Drive, Meet</td><td>Personal Google account (not company-owned)</td><td>Partial (Zimbra has calendar)</td><td>Zoho Calendar; Workplace ₹99 adds Docs/WorkDrive</td><td>Full suite, company-owned</td></tr>
+  <tr><td>Admin control (reset staff passwords, offboard)</td><td class="bad">None — mail sits in personal accounts</td><td>Full, if you know Linux</td><td>Yes, admin console</td><td>Yes, admin console</td></tr>
+  <tr><td>Backups, uptime, security patches</td><td>Google</td><td class="bad">You</td><td>Zoho</td><td>Google</td></tr>
+  <tr><td>Data location</td><td>Google global</td><td>Your VPS (India)</td><td>Zoho India (Mumbai/Chennai)</td><td>Google (India region available)</td></tr>
+  <tr><td>Migration of old cPanel mail</td><td>Manual (IMAP copy per user)</td><td>IMAP sync (imapsync)</td><td>Built-in migration tool</td><td>Built-in migration tool</td></tr>
+  <tr><td>Setup effort</td><td>1 hour</td><td class="bad">2–3 days + ongoing</td><td>2–3 hours</td><td>2–3 hours</td></tr>
+  <tr><td><b>Verdict</b></td><td>Fine stopgap; weak for a firm (no ownership)</td><td class="bad">Not recommended — costs more than Zoho once time is counted</td><td><b>Best value</b></td><td><b>Best experience</b> if budget allows</td></tr>
+</table>
+
+<div class="box green">
+  <b>Recommendation.</b> If ₹8–10k/year is acceptable, <b>Google Workspace Business Starter</b> — the team already works in Gmail and the firm owns the accounts. If the budget must stay minimal, <b>Zoho Mail Lite (₹3,540/yr)</b> gives real company mailboxes with Outlook/phone support. <b>Zoho Free (₹0)</b> works as a bridge for the 5 mailboxes while deciding. Self-hosting is the only option we advise against: the server costs as much as Zoho Lite before counting maintenance, and spam-filter reputation is a constant battle.
+</div>
+
+<h2>3. Cloudflare Pages as the replacement for the BigRock VPS</h2>
+<p>The VPS was a single Linux server doing everything. Cloudflare splits that into managed services, each on a free tier that this site's traffic will not exceed.</p>
+<table>
+  <tr><th>What the VPS did</th><th>Cloudflare equivalent</th><th>Free-tier limit</th><th class="n">Cost</th><th>Status</th></tr>
+  <tr><td>Serve the website (Apache/Nginx)</td><td><b>Pages</b> — global CDN, automatic SSL, HTTP/3</td><td>Unlimited bandwidth, 500 deploys/month</td><td class="n zero">₹0</td><td>Live</td></tr>
+  <tr><td>Backend API (Node on the VPS)</td><td><b>Pages Functions</b> (serverless)</td><td>100,000 requests/day</td><td class="n zero">₹0</td><td>Live — events, chat, careers, CMS</td></tr>
+  <tr><td>Database (MySQL)</td><td><b>Workers KV</b></td><td>1 GB, 100k reads/day, 1k writes/day</td><td class="n zero">₹0</td><td>Live — all site content</td></tr>
+  <tr><td>File uploads (images, résumés)</td><td><b>R2</b> object storage</td><td>10 GB, 10M reads/month</td><td class="n zero">₹0</td><td>Live — 120 images, résumé store</td></tr>
+  <tr><td>Admin panel</td><td>Built-in <b>/admin</b> with AI drafting</td><td>Workers AI 10,000 neurons/day (≈100 generations)</td><td class="n zero">₹0</td><td>Live</td></tr>
+  <tr><td>DNS (BigRock nameservers)</td><td><b>Cloudflare DNS</b></td><td>Unlimited</td><td class="n zero">₹0</td><td>Pending — step M3</td></tr>
+  <tr><td>Email forwarding</td><td><b>Email Routing</b> (forward only, no mailboxes)</td><td>Unlimited</td><td class="n zero">₹0</td><td>Optional</td></tr>
+  <tr><td>Mailboxes (cPanel)</td><td class="warn">Not offered — use §2</td><td>—</td><td class="n cost">see §2</td><td>Pending — step M2</td></tr>
+  <tr><td>SSH, cron, backups, patching</td><td>Not needed — no server to maintain</td><td>—</td><td class="n zero">₹0</td><td>—</td></tr>
+</table>
+<p class="small">If the site ever outgrows the free tiers, the next step is the Workers Paid plan at US$5/month (≈₹420) — still well under the VPS. R2 required a card on file to enable; it is already enabled on the account and bills ₹0 within the free quota.</p>
+
+<h3>What is already running on Cloudflare (₹0/month)</h3>
+<ul>
+  <li>Website with all client feedback from June applied — Pvt. Ltd name, career@/info@ emails, Events &amp; Due Dates calendar, AI chatbot.</li>
+  <li>CMS at <b>/admin</b>: hero, services, team, insights, events, jobs, client logos, case studies, testimonials — with AI drafting and résumé screening.</li>
+  <li>Careers application flow with private résumé storage.</li>
+  <li>SEO: every page pre-rendered, sitemap, structured data; Lighthouse desktop 86–90.</li>
+</ul>
+
+<h2>4. Migration plan, costed</h2>
+<p>Order matters: renew the domain first, move email second, move DNS third, cancel the VPS last. Nothing on the live site is interrupted at any step.</p>
+<table>
+  <tr><th>#</th><th>Activity</th><th>Who</th><th>When</th><th>Effort</th><th class="n">One-time ₹</th><th class="n">Recurring ₹/yr</th></tr>
+  <tr><td>M0</td><td><b>Renew psraoassociates.com</b> at BigRock (auto-renew is OFF; wallet ₹35.82 — pay by card). Confirm registrar and expiry of psrao.co.in.</td><td>KV Sir</td><td><b>Before 17 Oct</b></td><td>10 min</td><td class="n">0</td><td class="n cost">≈1,000–1,300</td></tr>
+  <tr><td>M1</td><td><b>Choose the email option</b> (§2) and confirm the 5 mailbox addresses. Tell us where info@/career@ are hosted today (we believe cPanel on the VPS).</td><td>KV Sir</td><td>This week</td><td>15 min</td><td class="n">0</td><td class="n cost">0 – 8,220</td></tr>
+  <tr><td>M2</td><td><b>Create mailboxes</b> on Zoho/Google; <b>migrate old mail</b> from cPanel with the provider's IMAP migration tool; set up phones/Outlook. Old and new run in parallel.</td><td>Us + each staff member</td><td>Week 1</td><td>2–3 h + 10 min per person</td><td class="n zero">0</td><td class="n">—</td></tr>
+  <tr><td>M3</td><td><b>Move DNS to Cloudflare</b>: add psrao.co.in to the Cloudflare account, copy existing records, switch nameservers at the registrar. Add MX, SPF, DKIM, DMARC for the new mail host. Attach <b>psrao.co.in</b> to the Pages site (replaces pages.dev URL).</td><td>Us</td><td>Week 1–2</td><td>1–2 h; DNS settles in ≤24 h</td><td class="n zero">0</td><td class="n zero">0</td></tr>
+  <tr><td>M4</td><td><b>Redirect psraoassociates.com → psrao.co.in</b> (301, via Cloudflare) so old links and Google results keep working. Wire application-alert emails to career@.</td><td>Us</td><td>Week 2</td><td>30 min</td><td class="n zero">0</td><td class="n zero">0</td></tr>
+  <tr><td>M5</td><td><b>Verify</b>: send/receive from every mailbox, test from Gmail/Outlook, confirm no mail lands in spam (SPF/DKIM pass), site resolves on psrao.co.in with SSL.</td><td>Us + KV Sir</td><td>Week 2</td><td>1 h</td><td class="n zero">0</td><td class="n zero">0</td></tr>
+  <tr><td>M6</td><td><b>Two-week overlap</b>, then export anything still on the VPS (cPanel full backup, old DB) to a drive as an archive.</td><td>Us</td><td>Weeks 2–4</td><td>1 h</td><td class="n zero">0</td><td class="n zero">0</td></tr>
+  <tr><td>M7</td><td><b>Let the VPS lapse</b> on 6 Nov 2026 (do not renew). Also ignore the SiteLock→cWatch notice — not needed on Cloudflare.</td><td>KV Sir</td><td><b>6 Nov</b></td><td>0</td><td class="n zero">0</td><td class="n zero">−10,000 to −15,000 saved</td></tr>
+  <tr><th colspan="5">Total migration cost</th><th class="n zero">₹0</th><th class="n cost">₹1,700 – 10,400 / yr (vs ≈12,000–17,000 today)</th></tr>
+</table>
+
+<div class="box amber">
+  <b>Two dates that cannot slip.</b> <b>17 Oct 2026</b> — psraoassociates.com renewal (if it lapses, the old address, old email and Google rankings for it are lost). <b>6 Nov 2026</b> — VPS expiry; email must be migrated (M2) and verified (M5) before this, or inbound mail to info@/career@ stops.
+</div>
+
+<h3>Decision needed from you</h3>
+<table>
+  <tr><th>Question</th><th>Options</th><th>Our suggestion</th></tr>
+  <tr><td>Email provider</td><td>A1 ₹0 · B Zoho Lite ₹3,540/yr · C Google ₹8,220/yr</td><td><b>C</b> if budget allows, else <b>B</b></td></tr>
+  <tr><td>Primary website domain</td><td>psrao.co.in · psraoassociates.com</td><td><b>psrao.co.in</b> (matches email), redirect the other</td></tr>
+  <tr><td>Domain registrar</td><td>Keep BigRock · Move to Cloudflare Registrar (cost price, no mark-up)</td><td>Keep for now; move at next renewal</td></tr>
+</table>
+
+<div class="foot">Prices: Zoho Mail India price list (Oct 2026): Free ₹0, Lite ₹59/₹75, Premium ₹199, Workplace Standard ₹99 per user/month. Google Workspace India: Business Starter ₹137/user/month on annual commitment; flexible plan higher. Cloudflare free-tier limits from developers.cloudflare.com. BigRock VPS figure is the typical renewal band; confirm in the BigRock panel. All figures exclude GST unless stated.</div>
+</body></html>
