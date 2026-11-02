@@ -170,12 +170,9 @@ function loadJobs() {
 
   await put("jobs", withSort(loadJobs()));
 
-  // Events: import from the firm's legacy feed so nothing is lost when the old host goes away.
-  try {
-    const rows = await (await fetch("https://api.psrao.co.in/get/eventduedates")).json();
-    const events = rows.filter((x) => x && x.eventduedate).map((x) => ({ id: uid(), title: x.title, type: x.typeofdate === "duedate" ? "duedate" : "event", date: new Date(x.eventduedate).toISOString().slice(0, 10), color: x.color || "#2E6BFF" }));
-    await put("events", events);
-  } catch (e) { console.warn("  events: legacy feed unavailable, skipped (", e.message, ")"); }
+  // Events: the legacy api.psrao.co.in feed was retired in the hosting migration (Nov 2026).
+  // Events live only in KV now — the seed leaves `content:events` untouched so /admin edits are never overwritten.
+  // Archive copy of the last legacy feed: docs-migration/legacy-events-2026-11-02.json
 
   console.log("\n✅ seed complete — open", BASE + "/admin/");
 })().catch((e) => { console.error("\n❌", e.message); process.exit(1); });

@@ -32,6 +32,4 @@ RESEND_API_KEY=
 CAREERS_NOTIFY_EMAIL=career@psrao.co.in
 NOTIFY_FROM=PS Rao Careers <careers@psrao.co.in>
 
-# --- Events & due dates fallback — OPTIONAL
-# Used only while KV content:events is empty (legacy feed from the old admin panel).
-EVENTS_SOURCE_URL=https://api.psrao.co.in/get/eventduedates
+# Events & due dates are stored in KV (content:events) only — the legacy EVENTS_SOURCE_URL fallback was removed in the hosting migration.
